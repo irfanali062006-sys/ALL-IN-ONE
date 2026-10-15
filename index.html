@@ -3,122 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compound Computer & Digital Services</title>
+    <title>All In One - Digital & Technology Services</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #0c101b;
+            background: linear-gradient(135deg, #090d16 0%, #121829 100%), 
+                        radial-gradient(circle at top right, rgba(0, 210, 255, 0.15), transparent 50%);
+            background-blend-mode: overlay;
             color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
         }
 
         .container {
-            background-color: #161e31;
+            background: rgba(22, 30, 49, 0.85);
+            backdrop-filter: blur(12px);
             width: 100%;
             max-width: 450px;
             padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-            border: 1px solid #25334e;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 210, 255, 0.2);
+            border: 1px solid rgba(0, 210, 255, 0.3);
             text-align: center;
+            position: relative;
+        }
+
+        .anime-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
         }
 
         h1 {
             color: #00d2ff;
-            font-size: 28px;
-            margin-bottom: 8px;
-            font-weight: bold;
+            font-size: 30px;
+            margin-bottom: 5px;
+            font-weight: 800;
             letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.4);
         }
 
         p.subtitle {
-            color: #8b9bb4;
-            font-size: 15px;
-            margin-bottom: 25px;
-            border-bottom: 1px solid #25334e;
-            padding-bottom: 15px;
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 12px;
         }
 
         .section-title {
-            color: #ffffff;
-            font-size: 18px;
-            margin-bottom: 15px;
+            color: #f8fafc;
+            font-size: 16px;
+            margin-bottom: 12px;
             text-align: left;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .services-list {
             list-style: none;
             text-align: left;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .services-list li {
-            background-color: #1f2c42;
-            margin-bottom: 10px;
-            padding: 14px;
-            border-radius: 8px;
-            color: #d1d9e6;
-            font-size: 14px;
+            background: rgba(31, 44, 66, 0.6);
+            margin-bottom: 8px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            color: #e2e8f0;
+            font-size: 13.5px;
             display: flex;
             align-items: center;
-            border: 1px solid #2e3e5e;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .services-list li:hover {
+            transform: translateX(4px);
+            border-color: #00d2ff;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
         }
 
         .services-list li::before {
-            content: "✔";
+            content: "⚡";
+            margin-right: 10px;
+        }
+
+        /* Login / Quick Inquiry Interface */
+        .login-box {
+            background: rgba(15, 23, 42, 0.7);
+            padding: 18px;
+            border-radius: 14px;
+            text-align: left;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .login-box h3 {
             color: #00d2ff;
-            margin-right: 12px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .login-box input:focus {
+            border-color: #00d2ff;
+            box-shadow: 0 0 8px rgba(0, 210, 255, 0.3);
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
             font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .login-box button:hover {
+            opacity: 0.9;
         }
 
         .contact-box {
-            background-color: #1f2c42;
-            padding: 20px;
+            background: rgba(31, 44, 66, 0.6);
+            padding: 15px;
             border-radius: 12px;
             text-align: left;
             border-left: 4px solid #00d2ff;
         }
 
-        .contact-box h3 {
-            color: #00d2ff;
-            font-size: 15px;
-            margin-bottom: 10px;
-        }
-
         .contact-box p {
-            color: #a0aec0;
-            font-size: 14px;
-            margin-bottom: 6px;
+            color: #cbd5e1;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Compound Computer</h1>
+        <div class="anime-badge">System Leveling Active</div>
+        <h1>All In One</h1>
         <p class="subtitle">Digital & Technology Services</p>
 
-        <h2 class="section-title">Hamari Sevaen:</h2>
+        <h2 class="section-title">Hamari Sevaayein (Our Services):</h2>
         <ul class="services-list">
             <li>Photo Copy aur Printing</li>
             <li>Photo Editing aur Lamination</li>
-            <li>Online Form aur Digital Sevaen</li>
+            <li>Online Form aur Digital Sevaayein</li>
             <li>Mobile aur Computer Repairing</li>
         </ul>
 
+        <!-- Login / Quick Inquiry Form -->
+        <div class="login-box">
+            <h3>Quick Login / Inquiry</h3>
+            <input type="text" placeholder="Aapka Naam (Your Name)">
+            <input type="text" placeholder="Mobile Number">
+            <button onclick="alert('Details submit ho gayi hain!')">Connect Now</button>
+        </div>
+
         <div class="contact-box">
-            <h3>Humse Sampark Karein:</h3>
             <p>📍 Pashkum Village, Kargil, Ladakh</p>
         </div>
     </div>
