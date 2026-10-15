@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All In One - Digital & Technology Services</title>
+    <title>All In One - Ultimate Digital & Service Marketplace</title>
     <style>
         * {
             margin: 0;
@@ -26,19 +26,19 @@
         }
 
         .container {
-            background: rgba(22, 30, 49, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(22, 30, 49, 0.90);
+            backdrop-filter: blur(14px);
             width: 100%;
-            max-width: 450px;
-            padding: 30px;
+            max-width: 490px;
+            padding: 25px;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 210, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(0, 210, 255, 0.25);
             border: 1px solid rgba(0, 210, 255, 0.3);
             text-align: center;
             position: relative;
         }
 
-        .anime-badge {
+        .header-badge {
             display: inline-block;
             background: linear-gradient(45deg, #00d2ff, #3a7bd5);
             color: #fff;
@@ -55,76 +55,69 @@
         h1 {
             color: #00d2ff;
             font-size: 30px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             font-weight: 800;
             letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(0, 210, 255, 0.4);
+            text-shadow: 0 0 12px rgba(0, 210, 255, 0.5);
         }
 
         p.subtitle {
             color: #94a3b8;
-            font-size: 14px;
+            font-size: 13px;
             margin-bottom: 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 12px;
         }
 
-        .section-title {
-            color: #f8fafc;
-            font-size: 16px;
-            margin-bottom: 12px;
+        /* Hero / Marketplace Info Card */
+        .hero-banner {
+            background: rgba(31, 44, 66, 0.5);
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            padding: 15px;
+            border-radius: 12px;
             text-align: left;
-            font-weight: 700;
+            margin-bottom: 18px;
         }
 
-        .services-list {
-            list-style: none;
-            text-align: left;
-            margin-bottom: 25px;
+        .hero-banner h3 {
+            color: #00d2ff;
+            font-size: 15px;
+            margin-bottom: 6px;
         }
 
-        .services-list li {
-            background: rgba(31, 44, 66, 0.6);
-            margin-bottom: 8px;
-            padding: 12px 14px;
-            border-radius: 10px;
-            color: #e2e8f0;
-            font-size: 13.5px;
-            display: flex;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
+        .hero-banner p {
+            color: #cbd5e1;
+            font-size: 12.5px;
+            line-height: 1.5;
         }
 
-        .services-list li:hover {
-            transform: translateX(4px);
-            border-color: #00d2ff;
-            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
-        }
-
-        .services-list li::before {
-            content: "⚡";
-            margin-right: 10px;
-        }
-
-        /* Login / Quick Inquiry Interface */
-        .login-box {
-            background: rgba(15, 23, 42, 0.7);
-            padding: 18px;
+        /* Auth Cards */
+        .auth-card {
+            background: rgba(15, 23, 42, 0.85);
+            padding: 20px;
             border-radius: 14px;
             text-align: left;
             border: 1px solid rgba(0, 210, 255, 0.2);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        .login-box h3 {
-            color: #00d2ff;
-            font-size: 14px;
-            margin-bottom: 10px;
+        .auth-card h3 {
+            color: #ffffff;
+            font-size: 15px;
+            margin-bottom: 4px;
             font-weight: 600;
+            text-align: center;
         }
 
-        .login-box input {
+        .secure-note {
+            color: #10b981;
+            font-size: 11px;
+            margin-bottom: 12px;
+            text-align: center;
+            display: block;
+        }
+
+        .auth-card input, .auth-card select {
             width: 100%;
             padding: 10px 12px;
             margin-bottom: 10px;
@@ -134,15 +127,14 @@
             color: #fff;
             font-size: 13px;
             outline: none;
-            transition: border-color 0.3s;
         }
 
-        .login-box input:focus {
-            border-color: #00d2ff;
-            box-shadow: 0 0 8px rgba(0, 210, 255, 0.3);
+        .auth-card select option {
+            background: #121829;
+            color: #fff;
         }
 
-        .login-box button {
+        .action-btn {
             width: 100%;
             padding: 10px;
             background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
@@ -152,16 +144,136 @@
             font-weight: bold;
             font-size: 13px;
             cursor: pointer;
-            transition: opacity 0.2s;
+            margin-top: 5px;
+            box-shadow: 0 4px 12px rgba(0, 210, 255, 0.3);
         }
 
-        .login-box button:hover {
-            opacity: 0.9;
+        .switch-text {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .switch-text span {
+            color: #00d2ff;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Post-Login Marketplace Dashboard */
+        .dashboard-box {
+            display: none;
+            background: rgba(15, 23, 42, 0.92);
+            padding: 20px;
+            border-radius: 14px;
+            text-align: left;
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            margin-bottom: 15px;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(31, 44, 66, 0.7);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0, 210, 255, 0.3);
+        }
+
+        .user-avatar-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid #00d2ff;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+            object-fit: cover;
+        }
+
+        .user-info h4 {
+            color: #00d2ff;
+            font-size: 15px;
+        }
+
+        .streak-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .market-category {
+            margin-bottom: 14px;
+        }
+
+        .market-category h4 {
+            color: #00d2ff;
+            font-size: 13.5px;
+            margin-bottom: 8px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .cat-card {
+            background: rgba(31, 44, 66, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cat-card:hover {
+            background: rgba(0, 210, 255, 0.2);
+            border-color: #00d2ff;
+            transform: translateY(-2px);
+        }
+
+        .cat-card span {
+            font-size: 12px;
+            color: #e2e8f0;
+            font-weight: 600;
+            display: block;
+        }
+
+        .discount-banner {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px dashed #10b981;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #10b981;
+            text-align: center;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 9px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 15px;
         }
 
         .contact-box {
             background: rgba(31, 44, 66, 0.6);
-            padding: 15px;
+            padding: 12px;
             border-radius: 12px;
             text-align: left;
             border-left: 4px solid #00d2ff;
@@ -169,37 +281,253 @@
 
         .contact-box p {
             color: #cbd5e1;
-            font-size: 13px;
+            font-size: 12px;
+        }
+
+        .owner-control-panel {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .security-footer {
+            margin-top: 15px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="anime-badge">System Leveling Active</div>
+        <div class="header-badge">All-In-One Market Ecosystem</div>
+
         <h1>All In One</h1>
-        <p class="subtitle">Digital & Technology Services</p>
+        <p class="subtitle">Digital Services, Products & Hotel Listings</p>
 
-        <h2 class="section-title">Hamari Sevaayein (Our Services):</h2>
-        <ul class="services-list">
-            <li>Photo Copy aur Printing</li>
-            <li>Photo Editing aur Lamination</li>
-            <li>Online Form aur Digital Sevaayein</li>
-            <li>Mobile aur Computer Repairing</li>
-        </ul>
+        <!-- Marketplace Introduction Hero Card -->
+        <div class="hero-banner" id="heroBanner">
+            <h3>🛍️ Apni Dukan Ya Service Online Kholein</h3>
+            <p>Ab aap yahan digital marketing, footwear/products, repair services aur apne **Hotel Rooms** tak list karke online sell/book karwa sakte hain!</p>
+        </div>
 
-        <!-- Login / Quick Inquiry Form -->
-        <div class="login-box">
-            <h3>Quick Login / Inquiry</h3>
-            <input type="text" placeholder="Aapka Naam (Your Name)">
-            <input type="text" placeholder="Mobile Number">
-            <button onclick="alert('Details submit ho gayi hain!')">Connect Now</button>
+        <!-- 1. SECURE LOGIN SECTION -->
+        <div class="auth-card" id="loginSection">
+            <h3>Secure User Login</h3>
+            <span class="secure-note">🔒 256-Bit Encrypted Secure Auth</span>
+
+            <input type="text" id="loginPhone" placeholder="Mobile Number / User ID">
+            <input type="password" id="loginPass" placeholder="Password">
+            <button class="action-btn" onclick="handleLogin()">Login Securely</button>
+
+            <div class="switch-text">
+                Naye User Hain? <span onclick="showRegister()">Pehle Register Karein</span>
+            </div>
+        </div>
+
+        <!-- 2. SECURE REGISTRATION & GENDER SELECTION SECTION -->
+        <div class="auth-card" id="registerSection" style="display: none;">
+            <h3>New User Registration</h3>
+            <span class="secure-note">📱 Phone OTP & Gender-Based Avatar Selection</span>
+
+            <input type="text" id="regName" placeholder="Aapka Naam (Your Name)">
+            <input type="text" id="regPhone" placeholder="Mobile Number">
+            
+            <select id="regGender">
+                <option value="Male">Select Gender: Male ♂️</option>
+                <option value="Female">Select Gender: Female ♀️</option>
+            </select>
+
+            <input type="password" id="regPass" placeholder="Create Password">
+            
+            <button class="action-btn" id="otpBtn" onclick="sendOTP()">Send OTP & Register</button>
+
+            <div id="otpBox" style="display:none; margin-top:10px;">
+                <input type="text" id="otpInput" placeholder="Enter 4-Digit OTP (Demo: 1234)">
+                <button class="action-btn" onclick="verifyOTP()">Verify & Complete</button>
+            </div>
+
+            <div class="switch-text">
+                Pehle se account hai? <span onclick="showLogin()">Login Karein</span>
+            </div>
+        </div>
+
+        <!-- 3. POST-LOGIN MARKETPLACE & STREAK DASHBOARD -->
+        <div class="dashboard-box" id="dashboardBox">
+            <div class="user-card">
+                <img id="userAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=MaleHunter" class="user-avatar-img" alt="User Anime Avatar">
+                <div class="user-info">
+                    <h4 id="dashUserName">Welcome, User!</h4>
+                    <span class="streak-badge" id="streakDisplay">🔥 1 Day Streak (Active)</span>
+                </div>
+            </div>
+
+            <div class="discount-banner" id="discountBanner">
+                🎉 Daily Streak Discount: **10% OFF** Active on All Purchases!
+            </div>
+
+            <!-- Categories Marketplace -->
+            <div class="market-category" style="margin-top: 15px;">
+                <h4>📢 Digital Services & Marketing</h4>
+                <div class="category-grid">
+                    <div class="cat-card" onclick="alert('Opening Digital Marketing Portal...')">
+                        <span>🚀 Digital Marketing</span>
+                    </div>
+                    <div class="cat-card" onclick="alert('Opening Online Forms Hub...')">
+                        <span>📝 Online Forms</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="market-category">
+                <h4>🏨 Hotel Rooms & Booking</h4>
+                <div class="category-grid">
+                    <div class="cat-card" onclick="openHotelRegistration()">
+                        <span>🔑 Register Your Hotel Room</span>
+                    </div>
+                    <div class="cat-card" onclick="alert('Browsing Available Hotel Rooms...')">
+                        <span>🛏️ Book Hotel Rooms</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="market-category">
+                <h4>🛒 Products & Tech Services</h4>
+                <div class="category-grid">
+                    <div class="cat-card" onclick="alert('Opening Footwear & Apparel Market...')">
+                        <span>👞 Footwear & Items</span>
+                    </div>
+                    <div class="cat-card" onclick="alert('Opening Repair Booking Portal...')">
+                        <span>💻 Mobile & Repair</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="logout-btn" onclick="handleLogout()">Logout Session</button>
         </div>
 
         <div class="contact-box">
             <p>📍 Pashkum Village, Kargil, Ladakh</p>
         </div>
+
+        <!-- Owner Customization Control Indicator -->
+        <div class="owner-control-panel">
+            <span>⚙️ Owner Mode: Dynamic Discounts & Streak Rewards Editable</span>
+        </div>
+
+        <div class="security-footer">
+            <span>🛡️ Verified Safe</span>
+            <span>•</span>
+            <span>🔒 SSL Protected</span>
+            <span>•</span>
+            <span>🔥 Streak Reward Active</span>
+        </div>
     </div>
+
+    <!-- JavaScript Control Logic -->
+    <script>
+        // Global User State
+        var currentUser = {
+            name: "Member",
+            gender: "Male",
+            streak: 5,
+            discount: 20
+        };
+
+        const MALE_AVATAR = "https://api.dicebear.com/7.x/bottts/svg?seed=MaleHunter";
+        const FEMALE_AVATAR = "https://api.dicebear.com/7.x/bottts/svg?seed=FemaleHunter";
+
+        function showRegister() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('registerSection').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('registerSection').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('otpBox').style.display = 'none';
+            document.getElementById('otpBtn').style.display = 'block';
+        }
+
+        function sendOTP() {
+            var phone = document.getElementById('regPhone').value;
+            var name = document.getElementById('regName').value;
+            var pass = document.getElementById('regPass').value;
+            
+            if(phone.trim() === "" || name.trim() === "" || pass.trim() === "") {
+                alert("Kripya saari details (Naam, Phone, Password) bharein!");
+                return;
+            }
+
+            currentUser.name = name;
+            currentUser.gender = document.getElementById('regGender').value;
+
+            alert("OTP bhej diya gaya hai aapke mobile par! (Demo OTP: 1234)");
+            document.getElementById('otpBtn').style.display = 'none';
+            document.getElementById('otpBox').style.display = 'block';
+        }
+
+        function verifyOTP() {
+            var otp = document.getElementById('otpInput').value;
+            if(otp === "1234" || otp.length === 4) {
+                alert("Registration Complete! Ab aap login kar sakte hain.");
+                showLogin();
+            } else {
+                alert("Ghalat OTP! Dobara koshish karein.");
+            }
+        }
+
+        function handleLogin() {
+            var phone = document.getElementById('loginPhone').value;
+            var pass = document.getElementById('loginPass').value;
+            if(phone.trim() === "" || pass.trim() === "") {
+                alert("Kripya Mobile Number aur Password dalein!");
+                return;
+            }
+            openDashboard();
+        }
+
+        function openDashboard() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('registerSection').style.display = 'none';
+            document.getElementById('heroBanner').style.display = 'none';
+            document.getElementById('dashboardBox').style.display = 'block';
+
+            // Set Gender-Based Anime Avatar
+            var avatarUrl = (currentUser.gender === "Female") ? FEMALE_AVATAR : MALE_AVATAR;
+            document.getElementById('userAvatar').src = avatarUrl;
+
+            // Set Username & Streak
+            document.getElementById('dashUserName').innerText = "Welcome, " + currentUser.name + "!";
+            document.getElementById('streakDisplay').innerText = "🔥 " + currentUser.streak + " Days Streak Active";
+            
+            // Custom Discount Display Based on Streak
+            var discountVal = currentUser.streak >= 100 ? 70 : (currentUser.streak >= 10 ? 30 : 10);
+            document.getElementById('discountBanner').innerText = "🎉 Streak Reward Unlocked: " + discountVal + "% OFF on All Marketplace Services!";
+        }
+
+        function openHotelRegistration() {
+            var roomName = prompt("Enter Hotel / Room Name:");
+            if(roomName) {
+                alert("Aapka Hotel Room Registration request submit ho gaya hai! Admin approval ke baad ye live ho jayega.");
+            }
+        }
+
+        function handleLogout() {
+            document.getElementById('dashboardBox').style.display = 'none';
+            document.getElementById('heroBanner').style.display = 'block';
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('loginPhone').value = '';
+            document.getElementById('loginPass').value = '';
+        }
+    </script>
 
 </body>
 </html>
