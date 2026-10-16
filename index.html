@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All-In-One Portal, Marketplace & Esports Hub</title>
+    <title>All-In-One Ultimate Portal, Marketplace & Esports Hub</title>
     <!-- FontAwesome Icons & Google Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,18 +21,20 @@
         }
 
         body {
-            background: radial-gradient(circle at top left, #0f172a, #090d16);
-            color: #f1f5f9;
+            background: radial-gradient(circle at top left, #0b0f19, #030712);
+            color: #f8fafc;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
+        /* Top Glass Navbar */
         .navbar {
             background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 15px 30px;
+            padding: 15px 35px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -42,113 +44,118 @@
         }
 
         .brand-logo {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
-            background: linear-gradient(135deg, #6366f1, #a855f7);
+            background: linear-gradient(135deg, #6366f1, #ec4899);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             cursor: pointer;
         }
 
         .user-nav-info {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 18px;
         }
 
         .user-avatar {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid #6366f1;
             cursor: pointer;
+            transition: 0.3s;
         }
+        .user-avatar:hover { transform: scale(1.05); }
 
         .role-badge {
-            padding: 4px 12px;
+            padding: 5px 14px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .role-customer { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }
-        .role-seller { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
-        .role-owner { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+        .role-customer { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+        .role-seller { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .role-owner { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
 
         .btn-logout {
             background: rgba(239, 68, 68, 0.2);
             color: #f87171;
             border: 1px solid rgba(239, 68, 68, 0.4);
-            padding: 6px 14px;
-            border-radius: 8px;
+            padding: 7px 16px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 13px;
+            font-weight: 500;
             transition: 0.3s;
         }
         .btn-logout:hover { background: #ef4444; color: #fff; }
 
         .container {
-            max-width: 1200px;
-            margin: 30px auto;
+            max-width: 1250px;
+            margin: 35px auto;
             padding: 0 20px;
             width: 100%;
             flex: 1;
         }
 
         .glass-card {
-            background: rgba(30, 41, 59, 0.45);
+            background: rgba(30, 41, 59, 0.4);
             backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 22px;
-            padding: 35px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
             margin-bottom: 25px;
         }
 
+        /* Auth Form Layout */
         .auth-wrapper {
-            max-width: 440px;
+            max-width: 460px;
             margin: 20px auto;
         }
 
         .auth-tabs {
             display: flex;
-            gap: 5px;
+            gap: 10px;
             margin-bottom: 25px;
         }
 
         .auth-tab-btn {
             flex: 1;
-            padding: 10px 5px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
             color: #94a3b8;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             text-align: center;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 14px;
             transition: 0.3s;
         }
 
         .auth-tab-btn.active {
-            background: #6366f1;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
             color: #fff;
-            border-color: #6366f1;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            border-color: transparent;
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
         }
 
         .form-group {
             position: relative;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
         .form-group i {
             position: absolute;
-            left: 16px;
+            left: 18px;
             top: 50%;
             transform: translateY(-50%);
             color: #94a3b8;
@@ -156,10 +163,10 @@
 
         .form-control {
             width: 100%;
-            padding: 13px 16px 13px 48px;
-            background: rgba(15, 23, 42, 0.85);
+            padding: 14px 18px 14px 50px;
+            background: rgba(15, 23, 42, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            border-radius: 14px;
             color: #fff;
             font-size: 14px;
             outline: none;
@@ -168,42 +175,48 @@
 
         .form-control:focus {
             border-color: #6366f1;
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
         }
 
         .btn {
             width: 100%;
-            padding: 13px;
+            padding: 14px;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             transition: 0.3s;
             margin-bottom: 12px;
         }
 
-        .btn-primary { background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; }
+        .btn-primary { background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; box-shadow: 0 6px 20px rgba(99,102,241,0.3); }
+        .btn-primary:hover { opacity: 0.95; transform: translateY(-2px); }
+
         .btn-google { background: #ea4335; color: #fff; }
+        .btn-google:hover { background: #d93025; }
+
         .btn-phone { background: #10b981; color: #fff; }
-        .btn-back { background: rgba(255, 255, 255, 0.1); color: #fff; width: auto; padding: 8px 18px; margin-bottom: 20px; }
+        .btn-phone:hover { background: #059669; }
+
+        .btn-back { background: rgba(255, 255, 255, 0.08); color: #fff; width: auto; padding: 10px 20px; margin-bottom: 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
 
         .forgot-link {
             text-align: right;
-            font-size: 12px;
+            font-size: 13px;
             color: #60a5fa;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             cursor: pointer;
         }
         .forgot-link:hover { text-decoration: underline; }
 
         .divider {
             text-align: center;
-            margin: 16px 0;
+            margin: 18px 0;
             position: relative;
             color: #64748b;
             font-size: 12px;
@@ -213,39 +226,40 @@
             content: "";
             position: absolute;
             top: 50%;
-            width: 40%;
+            width: 42%;
             height: 1px;
             background: rgba(255, 255, 255, 0.1);
         }
         .divider::before { left: 0; }
         .divider::after { right: 0; }
 
+        /* Category Grid Boxes */
         .category-boxes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+            gap: 24px;
         }
 
         .category-card-box {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.65);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 18px;
-            padding: 25px;
+            border-radius: 20px;
+            padding: 30px;
             text-align: center;
             cursor: pointer;
             transition: 0.3s;
         }
 
         .category-card-box:hover {
-            transform: translateY(-6px);
+            transform: translateY(-8px);
             border-color: #6366f1;
-            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.35);
         }
 
         .category-card-box i {
-            font-size: 40px;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #6366f1, #a855f7);
+            font-size: 45px;
+            margin-bottom: 18px;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -253,91 +267,72 @@
         .items-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+            gap: 22px;
         }
 
         .item-card {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
+            border-radius: 16px;
             overflow: hidden;
+            transition: 0.3s;
         }
+        .item-card:hover { transform: translateY(-4px); border-color: rgba(99,102,241,0.4); }
 
         .item-img {
             width: 100%;
-            height: 160px;
+            height: 180px;
             object-fit: cover;
             background: #1e293b;
         }
 
         .item-info {
-            padding: 15px;
+            padding: 18px;
         }
 
-        /* Admin Table */
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-        .admin-table th, .admin-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .admin-table th { color: #94a3b8; font-weight: 500; }
-        .btn-sm {
-            padding: 5px 12px;
-            font-size: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            border: none;
-        }
-        .btn-approve { background: #10b981; color: white; }
-        .btn-reject { background: #ef4444; color: white; }
-
-        /* AI Widget */
+        /* Floating AI Widget */
         .ai-widget {
             position: fixed;
-            bottom: 25px;
-            right: 25px;
+            bottom: 30px;
+            right: 30px;
             z-index: 1000;
         }
 
         .ai-btn-toggle {
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #6366f1, #a855f7);
+            background: linear-gradient(135deg, #6366f1, #ec4899);
             color: #fff;
             border: none;
-            font-size: 24px;
+            font-size: 26px;
             cursor: pointer;
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.5);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: 0.3s;
         }
+        .ai-btn-toggle:hover { transform: scale(1.08); }
 
         .ai-chat-window {
             position: absolute;
-            bottom: 75px;
+            bottom: 80px;
             right: 0;
-            width: 360px;
-            height: 480px;
+            width: 380px;
+            height: 500px;
             background: rgba(15, 23, 42, 0.98);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 22px;
             display: none;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
         }
 
         .ai-chat-header {
-            padding: 15px;
+            padding: 18px;
             background: rgba(255, 255, 255, 0.05);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
@@ -347,36 +342,36 @@
 
         .ai-chat-messages {
             flex: 1;
-            padding: 15px;
+            padding: 18px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             font-size: 13px;
         }
 
         .msg {
-            padding: 9px 14px;
-            border-radius: 12px;
+            padding: 10px 16px;
+            border-radius: 14px;
             max-width: 85%;
-            line-height: 1.4;
+            line-height: 1.5;
         }
-        .msg-ai { background: rgba(255, 255, 255, 0.1); align-self: flex-start; color: #e2e8f0; }
+        .msg-ai { background: rgba(255, 255, 255, 0.08); align-self: flex-start; color: #e2e8f0; }
         .msg-user { background: #6366f1; align-self: flex-end; color: #fff; }
 
         .ai-chat-input {
-            padding: 12px;
+            padding: 14px;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
 
         .ai-chat-input input {
             flex: 1;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 10px 12px;
+            border-radius: 12px;
+            padding: 10px 14px;
             color: #fff;
             outline: none;
             font-size: 13px;
@@ -386,26 +381,33 @@
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
             border: none;
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             cursor: pointer;
         }
-        .btn-voice.listening { background: #ef4444; }
+        .btn-voice.listening { background: #ef4444; animation: pulse 1s infinite; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
 
         .profile-card {
-            max-width: 500px;
+            max-width: 520px;
             margin: 0 auto;
             text-align: center;
         }
 
         .profile-img-lg {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid #6366f1;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+            box-shadow: 0 10px 25px rgba(99,102,241,0.4);
         }
     </style>
 </head>
@@ -417,8 +419,8 @@
             <i class="fa-solid fa-gamepad"></i> All-In-One Hub
         </div>
         <div class="user-nav-info" id="nav-user-area" style="display: none;">
-            <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" id="nav-avatar" class="user-avatar" onclick="openProfileSection()" title="Click to view/edit profile">
-            <span id="user-display-name" style="font-size: 14px; cursor: pointer;" onclick="openProfileSection()">User</span>
+            <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" id="nav-avatar" class="user-avatar" onclick="openProfileSection()" title="Click to edit profile">
+            <span id="user-display-name" style="font-size: 14px; font-weight: 500; cursor: pointer;" onclick="openProfileSection()">User</span>
             <span id="user-role-badge" class="role-badge role-customer">Customer</span>
             <button class="btn-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
         </div>
@@ -427,17 +429,13 @@
     <!-- MAIN CONTAINER -->
     <div class="container">
 
-        <!-- AUTH SCREEN WITH DEDICATED TABS -->
+        <!-- AUTH SCREEN -->
         <div id="screen-auth" class="auth-wrapper">
             <div class="glass-card">
                 <div class="auth-tabs">
-                    <div id="tab-cust-login" class="auth-tab-btn active" onclick="switchAuthTab('customer_login')">Customer</div>
-                    <div id="tab-cust-reg" class="auth-tab-btn" onclick="switchAuthTab('customer_register')">Register</div>
-                    <div id="tab-seller-login" class="auth-tab-btn" onclick="switchAuthTab('seller')">Seller</div>
-                    <div id="tab-owner-login" class="auth-tab-btn" onclick="switchAuthTab('owner')">Owner</div>
+                    <div id="tab-login-btn" class="auth-tab-btn active" onclick="switchAuthMode('login')">Login</div>
+                    <div id="tab-register-btn" class="auth-tab-btn" onclick="switchAuthMode('register')">Register</div>
                 </div>
-
-                <h3 id="auth-form-title" style="font-size: 16px; margin-bottom: 15px; text-align: center; color: #94a3b8;">Customer Portal Login</h3>
 
                 <div class="form-group">
                     <i class="fa-solid fa-envelope"></i>
@@ -448,10 +446,10 @@
                     <input type="password" id="auth-password" class="form-control" placeholder="Password">
                 </div>
                 
-                <div class="forgot-link" id="forgot-password-link" onclick="handleForgotPassword()">Forgot Password?</div>
+                <div class="forgot-link" onclick="handleOwnerForgotPassword()">Forgot Owner Password?</div>
 
-                <button class="btn btn-primary" id="btn-auth-action" onclick="handleAuthentication()">
-                    <i class="fa-solid fa-right-to-bracket"></i> Login
+                <button class="btn btn-primary" id="btn-auth-submit" onclick="handleEmailAuth()">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login to Portal
                 </button>
 
                 <div class="divider">OR</div>
@@ -483,60 +481,33 @@
 
         <!-- DASHBOARD HOME VIEW -->
         <div id="screen-dashboard-home" style="display: none;">
-            
-            <!-- OWNER EXCLUSIVE CONSOLE -->
-            <div id="owner-admin-console" class="glass-card" style="display: none; border-color: rgba(239, 68, 68, 0.4);">
-                <h3 style="color: #f87171; margin-bottom: 12px;"><i class="fa-solid fa-user-shield"></i> Owner Console: Seller Upgrade Requests</h3>
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>User Email</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="owner-requests-tbody">
-                        <!-- Dynamic Seller Requests -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- SELLER APPLICATION BANNER FOR CUSTOMERS -->
-            <div id="seller-request-banner" class="glass-card" style="display: flex; justify-content: space-between; align-items: center; background: rgba(99, 102, 241, 0.1);">
-                <div>
-                    <h3 style="font-size: 17px; margin-bottom: 4px;"><i class="fa-solid fa-store"></i> Apply for Seller Account</h3>
-                    <p style="font-size: 13px; color: #94a3b8;">Send request to Owner to host products & game tournaments.</p>
-                </div>
-                <button class="btn btn-primary" style="width: auto; margin: 0; padding: 10px 20px;" onclick="applyForSeller()">Request Seller Role</button>
-            </div>
-
-            <div class="glass-card" style="margin-top: 25px;">
-                <h2 style="margin-bottom: 8px;"><i class="fa-solid fa-layer-group"></i> Explore Categories</h2>
-                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 25px;">Select a category below to open its dedicated page.</p>
+            <div class="glass-card">
+                <h2 style="margin-bottom: 8px;"><i class="fa-solid fa-layer-group"></i> Explore Categories & Hub</h2>
+                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 30px;">Select a category below to browse items, services, or esports tournaments.</p>
                 
                 <div class="category-boxes-grid">
                     <div class="category-card-box" onclick="openCategoryPage('accessories')">
                         <i class="fa-solid fa-headphones-simple"></i>
                         <h3>Mobile Accessories</h3>
-                        <p style="font-size: 12px; color: #94a3b8; margin-top: 5px;">Earbuds, Covers, Chargers</p>
+                        <p style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Earbuds, Covers, Chargers & Guards</p>
                     </div>
 
                     <div class="category-card-box" onclick="openCategoryPage('fashion')">
                         <i class="fa-solid fa-shirt"></i>
                         <h3>Fashion & Apparel</h3>
-                        <p style="font-size: 12px; color: #94a3b8; margin-top: 5px;">Trending Clothes & Wearables</p>
+                        <p style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Trending Clothes, Shoes & Wearables</p>
                     </div>
 
                     <div class="category-card-box" onclick="openCategoryPage('digital')">
                         <i class="fa-solid fa-screwdriver-wrench"></i>
                         <h3>Digital Services</h3>
-                        <p style="font-size: 12px; color: #94a3b8; margin-top: 5px;">Repairs, SIMs & Local Services</p>
+                        <p style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Folder Repairs, SIM Cards & Local Services</p>
                     </div>
 
                     <div class="category-card-box" onclick="openCategoryPage('tournaments')">
                         <i class="fa-solid fa-trophy"></i>
                         <h3>100+ Game Tournaments</h3>
-                        <p style="font-size: 12px; color: #94a3b8; margin-top: 5px;">Free Fire, BGMI Esports Lobbies</p>
+                        <p style="font-size: 13px; color: #94a3b8; margin-top: 8px;">Free Fire, BGMI & Esports Lobbies</p>
                     </div>
                 </div>
             </div>
@@ -549,10 +520,10 @@
             </button>
 
             <div class="glass-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                     <h2 id="cat-page-title"><i class="fa-solid fa-box"></i> Category</h2>
-                    <button id="btn-add-item" class="btn btn-primary" style="width: auto; margin: 0; display: none;" onclick="addNewItemToCategory()">
-                        <i class="fa-solid fa-plus"></i> Add Item / Tournament
+                    <button id="btn-add-item" class="btn btn-primary" style="width: auto; margin: 0;" onclick="addNewItemToCategory()">
+                        <i class="fa-solid fa-plus"></i> Add Item / Host Tournament
                     </button>
                 </div>
 
@@ -568,7 +539,7 @@
 
             <div class="glass-card profile-card">
                 <img src="" id="profile-avatar-lg" class="profile-img-lg" alt="Profile Picture">
-                <h3 id="profile-email-title" style="margin-bottom: 20px;">User Profile</h3>
+                <h3 id="profile-email-title" style="margin-bottom: 25px;">User Profile</h3>
 
                 <div class="form-group">
                     <i class="fa-solid fa-user"></i>
@@ -583,7 +554,7 @@
                 <button class="btn btn-primary" onclick="saveUserProfile()">
                     <i class="fa-solid fa-floppy-disk"></i> Save Profile Settings
                 </button>
-                <p id="profile-status-msg" style="font-size: 12px; color: #10b981; margin-top: 8px; display: none;">Profile auto-saved & updated!</p>
+                <p id="profile-status-msg" style="font-size: 13px; color: #10b981; margin-top: 10px; display: none;">Profile auto-saved & updated successfully!</p>
             </div>
         </div>
 
@@ -597,10 +568,10 @@
                 <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="toggleAIChat()"></i>
             </div>
             <div class="ai-chat-messages" id="ai-messages">
-                <div class="msg msg-ai" id="ai-welcome-msg">Hello! I am your AI assistant. How can I help you today?</div>
+                <div class="msg msg-ai" id="ai-welcome-msg">Namaste! Main aapka AI Assistant hoon.</div>
             </div>
             <div class="ai-chat-input">
-                <input type="text" id="ai-text-input" placeholder="Ask AI anything..." onkeypress="handleAIPress(event)">
+                <input type="text" id="ai-text-input" placeholder="Ask AI..." onkeypress="handleAIPress(event)">
                 <button class="btn-voice" id="btn-voice-mic" onclick="toggleVoiceRecognition()"><i class="fa-solid fa-microphone"></i></button>
             </div>
         </div>
@@ -623,16 +594,12 @@
         const auth = firebase.auth();
 
         let currentUser = null;
-        let userRole = 'customer'; // customer, seller, owner
-        let currentAuthTab = 'customer_login';
+        let userRole = 'customer';
+        let currentAuthMode = 'login';
         let activeCategory = null;
         let tempProfileBase64 = '';
         let isListening = false;
         let speechRecognizer = null;
-
-        let sellerRequestsList = [
-            { email: "pending_seller@gmail.com", status: "Pending" }
-        ];
 
         const categoryDatabase = {
             accessories: [
@@ -646,69 +613,29 @@
                 { id: 201, title: "Mobile Screen & Folder Replacement", price: "₹2,499", location: "Compound Computer Shop", image: "https://images.unsplash.com/photo-1597740985671-2a8a3b80502e?w=400" }
             ],
             tournaments: [
-                { id: 301, title: "Free Fire Squad Battle (BR / Clash Squad)", price: "Entry: ₹50 | Prize: ₹2,000", location: "Online / LAN Arena", image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400" },
-                { id: 302, title: "BGMI Erangel Championship Lobbies", price: "Entry: ₹100 | Prize: ₹5,000", location: "Online Custom Room", image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400" }
+                { id: 301, title: "Free Fire India Squad Battle (Online/Offline)", price: "Entry: ₹50 | Prize: ₹2,000", location: "Esports Arena Kargil", image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400" },
+                { id: 302, title: "BGMI Erangel Championship Lobbies", price: "Entry: ₹100 | Prize: ₹5,000", location: "Online Room / LAN", image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400" }
             ]
         };
 
-        function switchAuthTab(tab) {
-            currentAuthTab = tab;
-            ['tab-cust-login', 'tab-cust-reg', 'tab-seller-login', 'tab-owner-login'].forEach(id => {
-                document.getElementById(id).classList.remove('active');
-            });
-
-            if (tab === 'customer_login') {
-                document.getElementById('tab-cust-login').classList.add('active');
-                document.getElementById('auth-form-title').innerText = "Customer Login";
-                document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Login as Customer';
-            } else if (tab === 'customer_register') {
-                document.getElementById('tab-cust-reg').classList.add('active');
-                document.getElementById('auth-form-title').innerText = "New Customer Registration";
-                document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-user-plus"></i> Register Account';
-            } else if (tab === 'seller') {
-                document.getElementById('tab-seller-login').classList.add('active');
-                document.getElementById('auth-form-title').innerText = "Verified Seller Login";
-                document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-store"></i> Login as Seller';
-            } else if (tab === 'owner') {
-                document.getElementById('tab-owner-login').classList.add('active');
-                document.getElementById('auth-form-title').innerText = "Owner Admin Secure Login";
-                document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-shield-halved"></i> Owner Access Login';
-            }
-        }
-
-        function handleForgotPassword() {
+        function handleOwnerForgotPassword() {
             const emailInput = document.getElementById('auth-email').value.trim();
-            if (currentAuthTab === 'owner') {
-                if (emailInput !== "irfanali062006@gmail.com") {
-                    alert("Invalid Owner Credentials / Unauthorized Email!");
-                    return;
-                }
-                auth.sendPasswordResetEmail(emailInput)
-                    .then(() => alert("Secure Owner password reset link sent to your registered email."))
-                    .catch(err => alert(err.message));
-            } else {
-                if (!emailInput) return alert("Please enter your email address first.");
-                auth.sendPasswordResetEmail(emailInput)
-                    .then(() => alert("Password reset link sent to your email."))
-                    .catch(err => alert(err.message));
+            if (emailInput !== "irfanali062006@gmail.com") {
+                alert("Invalid Credentials: Password reset is exclusively for irfanali062006@gmail.com!");
+                return;
             }
+            auth.sendPasswordResetEmail(emailInput)
+                .then(() => alert("Owner password reset link dispatched to irfanali062006@gmail.com!"))
+                .catch(err => alert(err.message));
         }
 
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUser = user;
-                if (currentAuthTab === 'owner') {
-                    if (user.email === "irfanali062006@gmail.com") {
-                        userRole = 'owner';
-                    } else {
-                        alert("Invalid Owner Credentials! Access denied.");
-                        auth.signOut();
-                        return;
-                    }
-                } else if (currentAuthTab === 'seller') {
-                    userRole = 'seller';
+                if (user.email === "irfanali062006@gmail.com") {
+                    userRole = 'owner';
                 } else {
-                    userRole = (user.email === "irfanali062006@gmail.com") ? 'owner' : 'customer';
+                    userRole = 'customer';
                 }
                 loadUserProfile();
                 showDashboardHome();
@@ -718,39 +645,41 @@
             }
         });
 
-        function handleAuthentication() {
+        function switchAuthMode(mode) {
+            currentAuthMode = mode;
+            document.getElementById('tab-login-btn').className = `auth-tab-btn ${mode === 'login' ? 'active' : ''}`;
+            document.getElementById('tab-register-btn').className = `auth-tab-btn ${mode === 'register' ? 'active' : ''}`;
+            document.getElementById('btn-auth-submit').innerHTML = mode === 'login' ? 
+                '<i class="fa-solid fa-right-to-bracket"></i> Login to Portal' : 
+                '<i class="fa-solid fa-user-plus"></i> Register & Verify Email';
+        }
+
+        function handleEmailAuth() {
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
             if (!email || !password) return alert("Please fill both Email and Password!");
 
-            if (currentAuthTab === 'owner' && email !== "irfanali062006@gmail.com") {
-                alert("Invalid Credentials: Only official owner email is permitted.");
-                return;
-            }
-
-            if (currentAuthTab === 'customer_register') {
+            if (currentAuthMode === 'login') {
+                auth.signInWithEmailAndPassword(email, password)
+                    .then(res => {
+                        if (res.user.email !== "irfanali062006@gmail.com" && email.includes("owner")) {
+                            alert("Invalid Owner Credentials / Unauthorized Email!");
+                        }
+                    })
+                    .catch(err => alert("Invalid Credentials: " + err.message));
+            } else {
                 auth.createUserWithEmailAndPassword(email, password)
                     .then(res => {
                         res.user.sendEmailVerification();
-                        alert("Registration Successful! Verification link sent to your email.");
+                        alert("Registration Successful! Verification link has been sent to your email. Please check and verify.");
                     })
                     .catch(err => alert(err.message));
-            } else {
-                auth.signInWithEmailAndPassword(email, password)
-                    .catch(err => alert("Invalid Credentials: " + err.message));
             }
         }
 
         function loginWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider)
-                .then(res => {
-                    if (currentAuthTab === 'owner' && res.user.email !== "irfanali062006@gmail.com") {
-                        alert("Unauthorized Owner Login!");
-                        auth.signOut();
-                    }
-                })
-                .catch(err => alert(err.message));
+            auth.signInWithPopup(provider).catch(err => alert(err.message));
         }
 
         function sendOTP() {
@@ -818,7 +747,7 @@
 
             const msg = document.getElementById('profile-status-msg');
             msg.style.display = 'block';
-            setTimeout(() => { msg.style.display = 'none'; }, 2000);
+            setTimeout(() => { msg.style.display = 'none'; }, 2500);
         }
 
         function openProfileSection() {
@@ -847,65 +776,18 @@
             const badge = document.getElementById('user-role-badge');
             const aiNameElem = document.getElementById('ai-assistant-name');
             const aiWelcomeElem = document.getElementById('ai-welcome-msg');
-            const ownerConsole = document.getElementById('owner-admin-console');
-            const sellerBanner = document.getElementById('seller-request-banner');
 
             if (userRole === 'owner') {
                 badge.innerText = 'Owner (Super Admin)';
                 badge.className = 'role-badge role-owner';
-                ownerConsole.style.display = 'block';
-                sellerBanner.style.display = 'none';
                 aiNameElem.innerText = 'Asifa (Owner AI)';
-                aiWelcomeElem.innerText = 'Hello Boss Irfan! I am Asifa, your personal AI assistant. All platform controls, owner security, and tournament systems are fully operational.';
-                renderOwnerRequests();
-            } else if (userRole === 'seller') {
-                badge.innerText = 'Verified Seller';
-                badge.className = 'role-badge role-seller';
-                ownerConsole.style.display = 'none';
-                sellerBanner.style.display = 'none';
-                aiNameElem.innerText = 'Zahra (Help AI)';
-                aiWelcomeElem.innerText = 'Hello! I am Zahra. You can now host tournaments and add products to your shop with location details.';
+                aiWelcomeElem.innerText = 'Juley Boss Irfan! Main Asifa hoon. Cash on hand aur direct file upload active hai.';
             } else {
-                badge.innerText = 'Customer';
+                badge.innerText = 'Customer / Seller';
                 badge.className = 'role-badge role-customer';
-                ownerConsole.style.display = 'none';
-                sellerBanner.style.display = 'flex';
                 aiNameElem.innerText = 'Zahra (Help AI)';
-                aiWelcomeElem.innerText = 'Hello! I am Zahra. Explore categories, join esports tournaments, or request a seller account anytime.';
+                aiWelcomeElem.innerText = 'Namaste! Main Zahra hoon. Store pickup aur tournament lobbies me aapki sahayata karungi!';
             }
-        }
-
-        function applyForSeller() {
-            alert("Seller application submitted successfully to Owner! Awaiting review and approval.");
-        }
-
-        function renderOwnerRequests() {
-            const tbody = document.getElementById('owner-requests-tbody');
-            tbody.innerHTML = '';
-            sellerRequestsList.forEach((req, index) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${req.email}</td>
-                        <td><span style="color: #fbbf24;">${req.status}</span></td>
-                        <td>
-                            <button class="btn-sm btn-approve" onclick="approveSeller(${index})">Approve</button>
-                            <button class="btn-sm btn-reject" onclick="rejectSeller(${index})">Reject</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function approveSeller(index) {
-            sellerRequestsList[index].status = 'Approved';
-            renderOwnerRequests();
-            alert("Seller request approved successfully!");
-        }
-
-        function rejectSeller(index) {
-            sellerRequestsList.splice(index, 1);
-            renderOwnerRequests();
-            alert("Seller request rejected.");
         }
 
         function openCategoryPage(catKey) {
@@ -922,8 +804,6 @@
                 tournaments: '<i class="fa-solid fa-trophy"></i> 100+ Game Tournaments'
             };
             titleElem.innerHTML = titles[catKey] || 'Category Page';
-
-            document.getElementById('btn-add-item').style.display = (userRole === 'owner' || userRole === 'seller') ? 'block' : 'none';
             renderCategoryItems(categoryDatabase[catKey] || []);
         }
 
@@ -938,8 +818,8 @@
                         <div class="item-info">
                             <h4 style="font-size: 15px; margin-bottom: 5px;">${item.title}</h4>
                             <p style="color: #10b981; font-weight: 700; font-size: 14px; margin-bottom: 5px;">${item.price}</p>
-                            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;"><i class="fa-solid fa-location-dot"></i> Location: ${item.location || 'Kargil Shop'}</p>
-                            <button class="btn btn-primary" style="padding: 6px; font-size: 12px; margin: 0;">${activeCategory === 'tournaments' ? 'Join Lobby / Match' : 'Buy (Cash on Hand)'}</button>
+                            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;"><i class="fa-solid fa-location-dot"></i> Location: ${item.location || 'Kargil Shop'}</p>
+                            <button class="btn btn-primary" style="padding: 8px; font-size: 13px; margin: 0;">${activeCategory === 'tournaments' ? 'Join Tournament' : 'Buy (Cash on Hand)'}</button>
                         </div>
                     </div>
                 `;
@@ -999,29 +879,19 @@
                 const q = text.toLowerCase();
 
                 if (userRole === 'owner') {
-                    if (q.includes('security') || q.includes('owner') || q.includes('password')) {
-                        reply = "Boss Irfan, the owner login is strictly secured for your email with safe password recovery and no email leaks.";
-                    } else {
-                        reply = "Hello Boss Irfan! Asifa here. I am managing all your marketplace requests, tournament lobbies, and system databases seamlessly.";
-                    }
+                    reply = "🛠️ [Asifa Action]: Boss Irfan, direct image upload file picker aur location system 100% active kar diya gaya hai!";
                 } else {
-                    if (q.includes('tournament') || q.includes('game') || q.includes('free fire') || q.includes('bgmi')) {
-                        reply = "You can explore 100+ game tournaments with online/offline modes, custom entry fees, and prize pools!";
-                    } else if (q.includes('seller') || q.includes('shop')) {
-                        reply = "You can request a seller account from your dashboard. Once approved by Owner Irfan, you can host items and tournaments.";
-                    } else {
-                        reply = "Hello! I am Zahra. I can help you navigate categories, check store pickup locations, or manage your profile settings.";
-                    }
+                    reply = "Hello! Main Zahra hoon. Aap items par click karke shop location dekh sakte hain aur Cash on Hand ke sath store par khareedari kar sakte hain.";
                 }
 
                 msgs.innerHTML += `<div class="msg msg-ai">${reply}</div>`;
                 msgs.scrollTop = msgs.scrollHeight;
-            }, 500);
+            }, 600);
         }
 
         function toggleVoiceRecognition() {
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                return alert("Voice Recognition is not supported in this browser.");
+                return alert("Voice Recognition is not supported.");
             }
 
             const btn = document.getElementById('btn-voice-mic');
@@ -1032,7 +902,7 @@
             } else {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 speechRecognizer = new SpeechRecognition();
-                speechRecognizer.lang = 'en-US';
+                speechRecognizer.lang = 'hi-IN';
                 
                 speechRecognizer.onstart = () => {
                     isListening = true;
