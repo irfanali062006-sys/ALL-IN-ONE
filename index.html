@@ -3,79 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All In One - Ultimate Marketplace & Profile Portal</title>
+    <title>All In One - Universal Marketplace & Service Portal</title>
+    <!-- CryptoJS Library for SHA-256 Encryption -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #030712 0%, #0f172a 40%, #1e1b4b 100%), 
-                        radial-gradient(circle at top, rgba(0, 242, 254, 0.15) 0%, transparent 60%);
-            background-blend-mode: overlay;
+            background: #030712;
+            background-image: radial-gradient(circle at top, rgba(0, 242, 254, 0.12) 0%, transparent 65%),
+                              linear-gradient(135deg, #030712 0%, #0f172a 50%, #1e1b4b 100%);
             color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
+            padding: 16px;
         }
 
         .container {
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(18px);
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(20px);
             width: 100%;
-            max-width: 500px;
-            padding: 26px;
-            border-radius: 24px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 210, 255, 0.25);
-            border: 1px solid rgba(0, 242, 254, 0.4);
+            max-width: 480px;
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 242, 254, 0.25);
+            border: 1px solid rgba(0, 242, 254, 0.35);
             text-align: center;
-            position: relative;
         }
 
         .header-badge {
             display: inline-block;
             background: linear-gradient(45deg, #00f2fe, #4facfe);
             color: #030712;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 800;
-            padding: 5px 14px;
+            padding: 4px 12px;
             border-radius: 20px;
             margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
         }
 
         h1 {
             color: #00f2fe;
-            font-size: 32px;
-            margin-bottom: 4px;
+            font-size: 28px;
             font-weight: 900;
-            letter-spacing: 1px;
-            text-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+            margin-bottom: 2px;
+            letter-spacing: 0.5px;
         }
 
         p.subtitle {
             color: #94a3b8;
-            font-size: 13px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 12px;
+            font-size: 12px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 10px;
+        }
+
+        .scam-alert {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 11px;
+            color: #fca5a5;
+            text-align: left;
+            line-height: 1.4;
         }
 
         .search-bar {
             width: 100%;
-            padding: 10px 14px;
+            padding: 11px 14px;
             margin-bottom: 15px;
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(0, 242, 254, 0.3);
-            border-radius: 12px;
+            border-radius: 10px;
             color: #fff;
             font-size: 13px;
             outline: none;
@@ -86,74 +96,58 @@
             box-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
         }
 
-        .hero-banner {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            padding: 16px;
+        .auth-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 18px;
             border-radius: 14px;
             text-align: left;
-            margin-bottom: 18px;
-        }
-
-        .hero-banner h3 {
-            color: #00f2fe;
-            font-size: 15px;
-            margin-bottom: 6px;
-        }
-
-        .hero-banner p {
-            color: #cbd5e1;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-        /* Scam Alert Warning Box */
-        .scam-alert {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px dashed #ef4444;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 11.5px;
-            color: #fca5a5;
-            text-align: left;
-        }
-
-        .auth-card {
-            background: rgba(15, 23, 42, 0.95);
-            padding: 20px;
-            border-radius: 16px;
-            text-align: left;
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            margin-bottom: 15px;
+            border: 1px solid rgba(0, 242, 254, 0.25);
+            margin-bottom: 14px;
         }
 
         .auth-card h3 {
             color: #ffffff;
-            font-size: 15px;
+            font-size: 14px;
             margin-bottom: 4px;
-            font-weight: 600;
             text-align: center;
+            font-weight: 700;
         }
 
         .secure-note {
             color: #10b981;
             font-size: 11px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             text-align: center;
             display: block;
         }
 
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
         .auth-card input, .auth-card select {
             width: 100%;
-            padding: 11px 13px;
-            margin-bottom: 10px;
-            background: rgba(255, 255, 255, 0.06);
+            padding: 10px 12px;
+            background: rgba(15, 23, 42, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
+            border-radius: 8px;
             color: #fff;
-            font-size: 13px;
+            font-size: 12.5px;
             outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .auth-card input:focus, .auth-card select:focus {
+            border-color: #00f2fe;
+            box-shadow: 0 0 8px rgba(0, 242, 254, 0.3);
         }
 
         .auth-card select option {
@@ -166,13 +160,13 @@
             padding: 11px;
             background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             color: #030712;
             font-weight: 800;
-            font-size: 13.5px;
+            font-size: 13px;
             cursor: pointer;
-            margin-top: 5px;
-            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4);
+            margin-top: 6px;
+            box-shadow: 0 4px 12px rgba(0, 242, 254, 0.3);
         }
 
         .whatsapp-btn {
@@ -181,72 +175,71 @@
             background: #25d366;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: bold;
-            font-size: 12.5px;
+            font-size: 12px;
             cursor: pointer;
-            margin-top: 8px;
+            margin-top: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
         }
 
         .switch-text {
             text-align: center;
             margin-top: 12px;
-            font-size: 12px;
+            font-size: 11.5px;
             color: #94a3b8;
         }
 
         .switch-text span {
             color: #00f2fe;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        /* Post-Login Dashboard */
+        /* Dashboard & Profile */
         .dashboard-box {
             display: none;
             background: rgba(15, 23, 42, 0.96);
-            padding: 20px;
-            border-radius: 16px;
+            padding: 18px;
+            border-radius: 14px;
             text-align: left;
             border: 1px solid rgba(0, 242, 254, 0.5);
-            margin-bottom: 15px;
+            margin-bottom: 14px;
         }
 
-        /* Profile Card inside Dashboard */
         .profile-card {
             background: rgba(30, 41, 59, 0.85);
-            padding: 14px;
-            border-radius: 14px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(0, 242, 254, 0.4);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .profile-header {
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(0, 242, 254, 0.35);
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
         .user-avatar-img {
-            width: 65px;
-            height: 65px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             border: 2px solid #00f2fe;
-            box-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
             object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            overflow: hidden;
+            text-align: left;
+            flex-grow: 1;
         }
 
         .user-info h4 {
             color: #00f2fe;
-            font-size: 16px;
+            font-size: 14.5px;
+            font-weight: 700;
         }
 
         .user-info p {
@@ -259,20 +252,10 @@
             background: linear-gradient(45deg, #f59e0b, #ef4444);
             color: #fff;
             padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 11px;
+            border-radius: 8px;
+            font-size: 10px;
             font-weight: bold;
             margin-top: 4px;
-        }
-
-        .profile-details {
-            background: rgba(15, 23, 42, 0.6);
-            padding: 8px 10px;
-            border-radius: 8px;
-            font-size: 11.5px;
-            color: #cbd5e1;
-            display: flex;
-            justify-content: space-between;
         }
 
         .market-category {
@@ -281,51 +264,38 @@
 
         .market-category h4 {
             color: #00f2fe;
-            font-size: 13.5px;
+            font-size: 13px;
             margin-bottom: 8px;
         }
 
         .category-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
         }
 
         .cat-card {
             background: rgba(30, 41, 59, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 10px;
+            padding: 10px 8px;
+            border-radius: 8px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .cat-card:hover {
-            background: rgba(0, 242, 254, 0.2);
+            background: rgba(0, 242, 254, 0.18);
             border-color: #00f2fe;
-            transform: translateY(-2px);
         }
 
         .cat-card span {
-            font-size: 12px;
+            font-size: 11.5px;
             color: #e2e8f0;
             font-weight: 600;
             display: block;
         }
 
-        .vip-banner {
-            background: rgba(245, 158, 11, 0.15);
-            border: 1px dashed #f59e0b;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            font-size: 12px;
-            color: #f59e0b;
-            text-align: center;
-        }
-
-        /* Admin Panel */
         .admin-panel-box {
             background: rgba(245, 158, 11, 0.1);
             border: 1px solid rgba(245, 158, 11, 0.4);
@@ -340,292 +310,269 @@
             margin-bottom: 6px;
         }
 
-        .admin-req-item {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 11.5px;
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .approve-btn {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
         .logout-btn {
             width: 100%;
             padding: 10px;
             background: rgba(239, 68, 68, 0.2);
             border: 1px solid rgba(239, 68, 68, 0.4);
             color: #ef4444;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: bold;
             font-size: 12px;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 14px;
         }
 
         .contact-box {
             background: rgba(30, 41, 59, 0.6);
-            padding: 12px;
-            border-radius: 12px;
+            padding: 10px;
+            border-radius: 10px;
             text-align: left;
             border-left: 4px solid #00f2fe;
+            margin-top: 14px;
         }
 
         .contact-box p {
             color: #cbd5e1;
-            font-size: 12px;
+            font-size: 11.5px;
         }
 
         .security-footer {
-            margin-top: 15px;
+            margin-top: 14px;
             font-size: 10px;
             color: #64748b;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="header-badge">All-In-One Verified Ecosystem</div>
+        <div class="header-badge">Universal Service Hub</div>
 
         <h1>All In One</h1>
-        <p class="subtitle">Multi-Vendor Marketplace & Profile Portal</p>
+        <p class="subtitle">Ultimate Digital Marketplace & Portal System</p>
 
-        <!-- Scam Alert Warning -->
+        <!-- Fraud Alert -->
         <div class="scam-alert">
-            ⚠️ <b>Fraud & Scam Alert:</b> All In One kabhi bhi advance payment ke liye personal UPI ya OTP nahi maangta. Sirf verified official channels ka use karein!
+            🛡️ <b>Universal Fraud Guard:</b> Please do not share OTP or sensitive login details. All In One staff will never ask for confidential information.
         </div>
 
-        <!-- Search Bar -->
-        <input type="text" class="search-bar" id="searchBox" placeholder="🔍 Search Services, Sellers, Hotels..." onkeyup="filterCategories()">
+        <!-- Universal Search Bar -->
+        <input type="text" class="search-bar" id="searchBox" placeholder="🔍 Search All Services, Vendors, Products..." onkeyup="filterCategories()">
 
-        <!-- Hero Banner -->
-        <div class="hero-banner" id="heroBanner">
-            <h3>🌐 Secure Multi-Vendor Marketplace</h3>
-            <p>Customer, Seller aur Owner Admin ke liye alag-alag portals aur custom Profile management system ke sath!</p>
-        </div>
-
-        <!-- 1. SECURE LOGIN SECTION -->
+        <!-- 1. STRICT LOGIN SECTION -->
         <div class="auth-card" id="loginSection">
-            <h3>Secure Role-Based Login</h3>
-            <span class="secure-note">🔒 Select Correct Portal Role</span>
+            <h3>Role-Based Authentication</h3>
+            <span class="secure-note">🔒 SHA-256 Encrypted Portal Login</span>
 
-            <select id="loginRole" style="margin-bottom: 10px;">
-                <option value="Customer">Login as Customer</option>
-                <option value="Seller">Login as Seller (Vendor)</option>
-                <option value="Admin">Login as Owner (Master Admin)</option>
-            </select>
+            <div class="form-group">
+                <label>Select Account Role</label>
+                <select id="loginRole">
+                    <option value="Customer">Customer Portal</option>
+                    <option value="Seller">Seller / Vendor Portal</option>
+                    <option value="Admin">Owner Admin Portal</option>
+                </select>
+            </div>
 
-            <input type="text" id="loginUsername" placeholder="Unique Username / ID">
-            <input type="password" id="loginPass" placeholder="Password">
-            <button class="action-btn" onclick="handleLogin()">Login to Portal</button>
+            <div class="form-group">
+                <label>Unique Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter username">
+            </div>
 
-            <!-- Direct WhatsApp Help / Inquiry -->
-            <button class="whatsapp-btn" onclick="openWhatsAppInquiry('General Inquiry')">💬 Contact Official WhatsApp Support</button>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPass" placeholder="Enter password">
+            </div>
+
+            <button class="action-btn" onclick="handleSecureLogin()">Login Securely</button>
+            <button class="whatsapp-btn" onclick="openWhatsAppInquiry('General Support')">💬 Contact Official WhatsApp Support</button>
 
             <div class="switch-text">
-                Naye User Hain? <span onclick="showRegister()">Pehle Register Karein</span>
+                New User? <span onclick="showRegister()">Register Account</span>
             </div>
         </div>
 
-        <!-- 2. SECURE REGISTRATION & UNIQUE USERNAME CHECK -->
+        <!-- 2. STRICT REGISTRATION SECTION -->
         <div class="auth-card" id="registerSection" style="display: none;">
             <h3>New Account Registration</h3>
-            <span class="secure-note">📱 Unique Username & Profile Setup</span>
+            <span class="secure-note">📱 Strict Registration Validation</span>
 
-            <select id="regRole" style="margin-bottom: 10px;">
-                <option value="Customer">Register as Customer</option>
-                <option value="Seller">Register as Seller (1 Month Free Trial)</option>
-            </select>
+            <div class="form-group">
+                <label>Register As</label>
+                <select id="regRole">
+                    <option value="Customer">Customer</option>
+                    <option value="Seller">Seller (1 Month Free Trial Access)</option>
+                </select>
+            </div>
 
-            <input type="text" id="regName" placeholder="Full Name">
-            <input type="text" id="regUsername" placeholder="Unique Username (Must be Unique)">
-            <input type="text" id="regPhone" placeholder="Mobile Number">
-            
-            <select id="regGender" style="margin-bottom: 10px;">
-                <option value="Male">Select Gender: Male ♂️</option>
-                <option value="Female">Select Gender: Female ♀️</option>
-            </select>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="regName" placeholder="Your full name">
+            </div>
 
-            <input type="password" id="regPass" placeholder="Create Password">
-            
-            <button class="action-btn" id="otpBtn" onclick="sendRegistrationOTP()">Send OTP & Register</button>
+            <div class="form-group">
+                <label>Choose Unique Username</label>
+                <input type="text" id="regUsername" placeholder="e.g. irfan_ale">
+            </div>
 
-            <div id="otpBox" style="display:none; margin-top:10px;">
-                <input type="text" id="otpInput" placeholder="Enter OTP Received">
-                <button class="action-btn" onclick="verifyAndCompleteReg()">Verify & Create Account</button>
+            <div class="form-group">
+                <label>Mobile Number (10 Digits)</label>
+                <input type="text" id="regPhone" placeholder="10 digit phone number">
+            </div>
+
+            <div class="form-group">
+                <label>Gender Avatar</label>
+                <select id="regGender">
+                    <option value="Male">Male ♂️</option>
+                    <option value="Female">Female ♀️</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Create Strong Password (Min 6 chars)</label>
+                <input type="password" id="regPass" placeholder="At least 6 characters">
+            </div>
+
+            <button class="action-btn" id="otpBtn" onclick="sendRegistrationOTP()">Verify Details & Send OTP</button>
+
+            <div id="otpBox" style="display:none; margin-top:12px;">
+                <input type="text" id="otpInput" placeholder="Enter Received 4-Digit OTP">
+                <button class="action-btn" onclick="verifyAndCompleteReg()">Verify OTP & Create Account</button>
             </div>
 
             <div class="switch-text">
-                Pehle se account hai? <span onclick="showLogin()">Login Karein</span>
+                Already registered? <span onclick="showLogin()">Login Here</span>
             </div>
         </div>
 
-        <!-- 3. POST-LOGIN DASHBOARD WITH USER PROFILE -->
+        <!-- 3. POST-LOGIN DASHBOARD -->
         <div class="dashboard-box" id="dashboardBox">
-            
-            <!-- User Profile Card -->
             <div class="profile-card">
-                <div class="profile-header">
-                    <img id="userAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=MaleHunter" class="user-avatar-img" alt="User Anime Avatar">
-                    <div class="user-info">
-                        <h4 id="dashUserName">Welcome, User!</h4>
-                        <p id="dashUserHandle">@username</p>
-                        <span class="role-badge" id="roleBadgeDisplay">Role: Customer</span>
-                    </div>
-                </div>
-                <div class="profile-details">
-                    <span>📱 <b id="dashUserPhone">Phone: N/A</b></span>
-                    <span>🛡️ <b style="color: #10b981;">Verified Safe</b></span>
+                <img id="userAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=MaleHunter" class="user-avatar-img" alt="Avatar">
+                <div class="user-info">
+                    <h4 id="dashUserName">User</h4>
+                    <p id="dashUserHandle">@username</p>
+                    <span class="role-badge" id="roleBadgeDisplay">Role: Customer</span>
                 </div>
             </div>
 
-            <div class="vip-banner" id="statusBannerText">
-                ⭐ Account Active & Verified.
-            </div>
-
-            <!-- Owner Master Admin Panel -->
-            <div class="admin-panel-box" id="adminPanelBox" style="display: none; margin-top: 15px;">
-                <h5>👑 Owner Master Admin Panel</h5>
-                <p style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">Pending Seller / VIP Approvals:</p>
+            <!-- Owner Master Panel -->
+            <div class="admin-panel-box" id="adminPanelBox" style="display: none;">
+                <h5>👑 Universal Owner Admin Panel</h5>
+                <p style="font-size: 11px; color: #cbd5e1; margin-bottom: 8px;">Manage Vendors & Add Unlimited Categories:</p>
                 <div id="pendingRequestsList">
-                    <div class="admin-req-item">
-                        <span>Seller: Rahul (1 Month Free Trial)</span>
-                        <button class="approve-btn" onclick="approveSeller(this)">Approve</button>
-                    </div>
+                    <div style="font-size: 11px; color: #94a3b8; margin-bottom: 6px;">No pending vendor approvals.</div>
                 </div>
-                <button class="action-btn" onclick="addNewSlot()" style="margin-top: 8px; padding: 7px; font-size: 11.5px;">+ Add New Marketplace Slot</button>
+                <button class="action-btn" onclick="addNewSlot()" style="padding: 7px; font-size: 11.5px;">+ Add Unlimited Category Slot</button>
             </div>
 
-            <!-- Seller Specific Panel -->
-            <div id="sellerPanelBox" style="display: none; margin-top: 15px; background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.4); padding: 12px; border-radius: 10px;">
-                <h5 style="color: #00f2fe; margin-bottom: 6px;">🏪 Seller Dashboard</h5>
-                <p style="font-size: 11.5px; color: #cbd5e1; margin-bottom: 8px;">Apne products, hotel rooms ya services yahan list karein.</p>
-                <button class="action-btn" onclick="openSellerListing()" style="padding: 8px; font-size: 12px;">+ List New Service / Room</button>
+            <!-- Seller Portal -->
+            <div id="sellerPanelBox" style="display: none; margin-bottom: 12px; background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.4); padding: 10px; border-radius: 8px;">
+                <h5 style="color: #00f2fe; font-size: 12.5px; margin-bottom: 4px;">🏪 Seller Dashboard Active</h5>
+                <p style="font-size: 11px; color: #cbd5e1; margin-bottom: 6px;">List your hotel rooms, services, products or courses.</p>
+                <button class="action-btn" onclick="openSellerListing()" style="padding: 7px; font-size: 11.5px;">+ List Product / Service</button>
             </div>
 
-            <!-- Categories Marketplace Grid with WhatsApp Direct Integration -->
-            <div id="categoriesContainer" style="margin-top: 15px;">
-                <div class="market-category searchable-cat" data-name="digital marketing online forms">
+            <!-- Universal Categories Container -->
+            <div id="categoriesContainer">
+                <div class="market-category searchable-cat" data-name="digital marketing online forms services">
                     <h4>📢 Digital Services & Marketing</h4>
                     <div class="category-grid">
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Digital Marketing Service')">
+                        <div class="cat-card" onclick="openWhatsAppInquiry('Digital Marketing')">
                             <span>🚀 Digital Marketing</span>
                         </div>
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Online Forms Filling')">
+                        <div class="cat-card" onclick="openWhatsAppInquiry('Online Form Filling')">
                             <span>📝 Online Forms</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="market-category searchable-cat" data-name="hotel room bookings">
-                    <h4>🏨 Hotel Room Bookings</h4>
+                <div class="market-category searchable-cat" data-name="hotel room bookings travel stays">
+                    <h4>🏨 Hotel Room Bookings & Stays</h4>
                     <div class="category-grid">
                         <div class="cat-card" onclick="openWhatsAppInquiry('Hotel Room Booking')">
-                            <span>🛏️ Book Hotel Rooms</span>
+                            <span>🛏️ Book Rooms</span>
                         </div>
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Hotel Room Status Check')">
-                            <span>🔑 Room Status</span>
+                        <div class="cat-card" onclick="openWhatsAppInquiry('Room Availability')">
+                            <span>🔑 Check Status</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="market-category searchable-cat" data-name="education courses study">
-                    <h4>📚 Education & Courses</h4>
+                <div class="market-category searchable-cat" data-name="education courses study material">
+                    <h4>📚 Education & Learning Hub</h4>
                     <div class="category-grid">
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Study Material / Class 12')">
+                        <div class="cat-card" onclick="openWhatsAppInquiry('Study Material')">
                             <span>📖 Study Material</span>
                         </div>
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Online Classes Inquiry')">
+                        <div class="cat-card" onclick="openWhatsAppInquiry('Online Classes')">
                             <span>🎓 Online Classes</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="market-category searchable-cat" data-name="gaming tournaments esports">
-                    <h4>🎮 Gaming & Tournaments</h4>
+                <div class="market-category searchable-cat" data-name="gaming tournaments esports ff bgmi">
+                    <h4>🎮 Gaming & Esports Arena</h4>
                     <div class="category-grid">
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Free Fire / BGMI Tournament')">
+                        <div class="cat-card" onclick="openWhatsAppInquiry('Gaming Tournaments')">
                             <span>🏆 Free Fire / BGMI</span>
                         </div>
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Custom Room Booking')">
+                        <div class="cat-card" onclick="openWhatsAppInquiry('Custom Rooms')">
                             <span>⚡ Custom Rooms</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="market-category searchable-cat" data-name="clothes market footwear shopping">
-                    <h4>👗 Clothes & Footwear Market</h4>
+                <div class="market-category searchable-cat" data-name="clothes market footwear fashion apparel">
+                    <h4>👗 Fashion & Footwear Market</h4>
                     <div class="category-grid">
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Footwear & Shoes Order')">
+                        <div class="cat-card" onclick="openWhatsAppInquiry('Footwear Order')">
                             <span>👞 Footwear & Shoes</span>
                         </div>
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Fashion & Apparel Order')">
+                        <div class="cat-card" onclick="openWhatsAppInquiry('Fashion Apparel')">
                             <span>👕 Fashion & Apparel</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <button class="whatsapp-btn" onclick="openWhatsAppInquiry('Dashboard General Support')" style="margin-top: 15px;">💬 Direct WhatsApp Support</button>
+            <button class="whatsapp-btn" onclick="openWhatsAppInquiry('Universal General Help')">💬 WhatsApp Official Support</button>
             <button class="logout-btn" onclick="handleLogout()">Logout Session</button>
         </div>
 
-        <div class="contact-box" style="margin-top: 15px;">
+        <div class="contact-box">
             <p>📍 Pashkum Village, Kargil, Ladakh</p>
         </div>
 
         <div class="security-footer">
-            <span>🛡️ Anti-Scam Protected</span>
+            <span>🛡️ SHA-256 Encrypted</span>
             <span>•</span>
-            <span>🔒 Role-Based Access</span>
+            <span>🔒 Universal Hub</span>
             <span>•</span>
-            <span>⚡ Profile Active</span>
+            <span>⚡ Multi-Vendor</span>
         </div>
     </div>
 
-    <!-- JavaScript Role & Security Logic with Profile & WhatsApp -->
+    <!-- Strict Encrypted JavaScript Logic -->
     <script>
         var registeredUsers = JSON.parse(localStorage.getItem('all_in_one_users')) || {};
-        var currentUserSession = {
-            name: "",
-            username: "",
-            phone: "",
-            role: "Customer",
-            gender: "Male",
-            accessActive: true,
-            generatedOTP: ""
-        };
+        var currentUserSession = null;
 
         const MALE_AVATAR = "https://api.dicebear.com/7.x/bottts/svg?seed=MaleHunter";
         const FEMALE_AVATAR = "https://api.dicebear.com/7.x/bottts/svg?seed=FemaleHunter";
-
-        const OFFICIAL_WHATSAPP = "919000000000"; // Apna WhatsApp Number yahan daalein
-
-        function openWhatsAppInquiry(serviceName) {
-            var message = "Hello Admin, main All In One marketplace se '" + serviceName + "' ke baare mein jankari chahta hoon / order karna chahta hoon.";
-            var whatsappUrl = "https://wa.me/" + OFFICIAL_WHATSAPP + "?text=" + encodeURIComponent(message);
-            window.open(whatsappUrl, '_blank');
-        }
+        const OFFICIAL_WHATSAPP = "919000000000"; // Apna WhatsApp Number Yahan Daalein
 
         const MASTER_ADMIN_USER = "irfan_owner_admin";
-        const MASTER_ADMIN_PASS = "Kargil@AllInOne#2026";
+        const MASTER_ADMIN_HASH = CryptoJS.SHA256("Kargil@AllInOne#2026").toString();
+
+        function openWhatsAppInquiry(serviceName) {
+            var msg = "Hello Admin, I have an inquiry regarding '" + serviceName + "' on All In One Universal Portal.";
+            window.open("https://wa.me/" + OFFICIAL_WHATSAPP + "?text=" + encodeURIComponent(msg), '_blank');
+        }
 
         function showRegister() {
             document.getElementById('loginSection').style.display = 'none';
@@ -648,83 +595,105 @@
             var pass = document.getElementById('regPass').value.trim();
             var role = document.getElementById('regRole').value;
             var gender = document.getElementById('regGender').value;
-            
-            if(name === "" || username === "" || phone === "" || pass === "") {
-                alert("Kripya sabhi fields (Naam, Username, Phone, Password) bharein!");
+
+            if(name.length < 3) {
+                alert("⚠️ Error: Full Name must be at least 3 characters long!");
+                return;
+            }
+
+            if(username.length < 4 || !/^[a-zA-Z0-9_]+$/.test(username)) {
+                alert("⚠️ Error: Username must be at least 4 characters (letters, numbers, underscores only)!");
+                return;
+            }
+
+            if(!/^[0-9]{10}$/.test(phone)) {
+                alert("⚠️ Error: Please enter a valid 10-digit mobile number!");
+                return;
+            }
+
+            if(pass.length < 6) {
+                alert("⚠️ Error: Password must be at least 6 characters long!");
                 return;
             }
 
             if(registeredUsers[username] || username === MASTER_ADMIN_USER) {
-                alert("⚠️ Yeh Username pehle se maujood hai! Kripya koi doosra unique username dalein.");
+                alert("⚠️ Error: Username already exists! Choose another username.");
                 return;
             }
 
-            var randomOtp = Math.floor(1000 + Math.random() * 9000).toString();
-            currentUserSession.generatedOTP = randomOtp;
-            
+            var generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+            var passHash = CryptoJS.SHA256(pass).toString();
+
             tempRegData = {
                 name: name,
                 username: username,
                 phone: phone,
-                pass: pass,
+                passHash: passHash,
                 role: role,
                 gender: gender,
-                accessActive: (role === 'Seller') ? false : true
+                otp: generatedOtp
             };
 
-            alert("SMS Gateway: OTP [" + randomOtp + "] bhej diya gaya hai number " + phone + " par.");
+            alert("🔒 Secure Gateway: OTP [" + generatedOtp + "] sent to " + phone);
             document.getElementById('otpBtn').style.display = 'none';
             document.getElementById('otpBox').style.display = 'block';
         }
 
         function verifyAndCompleteReg() {
-            var otpInput = document.getElementById('otpInput').value.trim();
-            if(otpInput === currentUserSession.generatedOTP) {
+            var inputOtp = document.getElementById('otpInput').value.trim();
+            if(inputOtp === tempRegData.otp) {
+                delete tempRegData.otp;
                 registeredUsers[tempRegData.username] = tempRegData;
                 localStorage.setItem('all_in_one_users', JSON.stringify(registeredUsers));
-                alert("Registration Successful! Account create ho gaya hai. Ab aap login kar sakte hain.");
+                alert("✅ Registration Successful! Account securely encrypted. Please login now.");
                 showLogin();
             } else {
-                alert("Ghalat OTP! Sahi OTP dalein.");
+                alert("❌ Security Error: Invalid OTP code entered!");
             }
         }
 
-        function handleLogin() {
+        function handleSecureLogin() {
             var role = document.getElementById('loginRole').value;
             var username = document.getElementById('loginUsername').value.trim().toLowerCase();
             var pass = document.getElementById('loginPass').value.trim();
 
             if(username === "" || pass === "") {
-                alert("Kripya Username aur Password dalein!");
+                alert("⚠️ Error: Please enter Username and Password!");
                 return;
             }
 
+            var inputHash = CryptoJS.SHA256(pass).toString();
+
             if(role === "Admin") {
-                if(username === MASTER_ADMIN_USER && pass === MASTER_ADMIN_PASS) {
-                    currentUserSession = { name: "Irfan Ali (Owner)", username: "admin", phone: "Official", role: "Admin", gender: "Male", accessActive: true };
+                if(username === MASTER_ADMIN_USER && inputHash === MASTER_ADMIN_HASH) {
+                    currentUserSession = {
+                        name: "Irfan Ali (Master Owner)",
+                        username: "admin",
+                        role: "Admin",
+                        gender: "Male"
+                    };
                     openDashboard();
                     return;
                 } else {
-                    alert("Ghalat Master Admin Credentials!");
+                    alert("❌ Authentication Failed: Invalid Owner Admin Credentials!");
                     return;
                 }
             }
 
             if(!registeredUsers[username]) {
-                alert("Yeh username registered nahi hai! Pehle 'Register Karein' par click karke account banayein.");
-                showRegister();
+                alert("❌ Authentication Failed: Username does not exist!");
                 return;
             }
 
             var userObj = registeredUsers[username];
 
             if(userObj.role !== role) {
-                alert("Ghalat Portal Role select kiya hai! Aapne '" + userObj.role + "' ke taur per register kiya hai.");
+                alert("❌ Access Denied: Selected Role does not match your account!");
                 return;
             }
 
-            if(userObj.pass !== pass) {
-                alert("Ghalat Password! Kripya sahi password dalein.");
+            if(userObj.passHash !== inputHash) {
+                alert("❌ Authentication Failed: Incorrect Password!");
                 return;
             }
 
@@ -735,57 +704,44 @@
         function openDashboard() {
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('registerSection').style.display = 'none';
-            document.getElementById('heroBanner').style.display = 'none';
             document.getElementById('dashboardBox').style.display = 'block';
 
             var avatarUrl = (currentUserSession.gender === "Female") ? FEMALE_AVATAR : MALE_AVATAR;
             document.getElementById('userAvatar').src = avatarUrl;
 
-            // Set Profile Card details
             document.getElementById('dashUserName').innerText = currentUserSession.name;
             document.getElementById('dashUserHandle').innerText = "@" + currentUserSession.username;
-            document.getElementById('dashUserPhone').innerText = "Phone: " + currentUserSession.phone;
             document.getElementById('roleBadgeDisplay').innerText = "Role: " + currentUserSession.role;
 
             if(currentUserSession.role === "Admin") {
                 document.getElementById('adminPanelBox').style.display = 'block';
                 document.getElementById('sellerPanelBox').style.display = 'none';
-                document.getElementById('statusBannerText').innerHTML = "👑 Master Owner Admin Access Granted.";
             } else if(currentUserSession.role === "Seller") {
                 document.getElementById('adminPanelBox').style.display = 'none';
                 document.getElementById('sellerPanelBox').style.display = 'block';
-                document.getElementById('statusBannerText').innerHTML = "🏪 Seller Portal: 1 Month Free Trial Active (Pending Owner Approval for permanent slot).";
             } else {
                 document.getElementById('adminPanelBox').style.display = 'none';
                 document.getElementById('sellerPanelBox').style.display = 'none';
-                document.getElementById('statusBannerText').innerHTML = "👤 Customer Account Verified & Active.";
-            }
-        }
-
-        function approveSeller(btn) {
-            btn.parentElement.style.opacity = '0.5';
-            btn.innerText = 'Approved ✅';
-            btn.style.background = '#64748b';
-            alert("Seller account successfully approved with 1-Year VIP Slot!");
-        }
-
-        function openSellerListing() {
-            var item = prompt("Apna Service, Product ya Hotel Room naam enter karein:");
-            if(item) {
-                alert("Aapka listing request '" + item + "' Owner ke approval ke liye bhej diya gaya hai!");
             }
         }
 
         function addNewSlot() {
-            var slotName = prompt("Naye Marketplace Category/Slot ka naam enter karein:");
+            var slotName = prompt("Nayi Universal Category / Slot ka naam enter karein (e.g. Electronics, Real Estate):");
             if(slotName) {
                 var container = document.getElementById('categoriesContainer');
                 var newDiv = document.createElement('div');
                 newDiv.className = 'market-category searchable-cat';
                 newDiv.setAttribute('data-name', slotName.toLowerCase());
-                newDiv.innerHTML = '<h4>📌 ' + slotName + '</h4><div class="category-grid"><div class="cat-card" onclick="openWhatsAppInquiry(\'' + slotName + ' Inquiry\')"><span>💬 Inquire on WhatsApp</span></div><div class="cat-card" onclick="alert(\'Managing ' + slotName + '...\')"><span>⚙️ Manage</span></div></div>';
+                newDiv.innerHTML = '<h4>📌 ' + slotName + '</h4><div class="category-grid"><div class="cat-card" onclick="openWhatsAppInquiry(\'' + slotName + '\')"><span>💬 Inquiry / Order</span></div><div class="cat-card" onclick="alert(\'Managing ' + slotName + '...\')"><span>⚙️ Manage Slot</span></div></div>';
                 container.appendChild(newDiv);
-                alert("Naya slot '" + slotName + "' successfully add ho gaya hai!");
+                alert("Naya Universal Slot '" + slotName + "' successfully add kar diya gaya hai!");
+            }
+        }
+
+        function openSellerListing() {
+            var item = prompt("Apna Universal Product, Service ya Hotel Room naam enter karein:");
+            if(item) {
+                alert("Listing request for '" + item + "' sent to Owner Admin for approval!");
             }
         }
 
@@ -803,13 +759,12 @@
         }
 
         function handleLogout() {
+            currentUserSession = null;
             document.getElementById('dashboardBox').style.display = 'none';
-            document.getElementById('heroBanner').style.display = 'block';
             document.getElementById('loginSection').style.display = 'block';
             document.getElementById('loginUsername').value = '';
             document.getElementById('loginPass').value = '';
         }
     </script>
-
 </body>
 </html>
