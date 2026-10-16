@@ -4,8 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All In One - Universal Marketplace Portal</title>
-    <!-- CryptoJS for SHA-256 Encryption -->
+    <!-- CryptoJS for Password Hashing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+    <!-- Firebase Modular SDKs (v10) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Your Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtB_fry59vjcWg9NLmvTgZbaxA5hcSWD0",
+            authDomain: "all-in-one-marketplace-30cd5.firebaseapp.com",
+            projectId: "all-in-one-marketplace-30cd5",
+            storageBucket: "all-in-one-marketplace-30cd5.firebasestorage.app",
+            messagingSenderId: "517666199048",
+            appId: "1:517666199048:web:ac5ddcd4fcef8ab000a3bd",
+            measurementId: "G-KMSBF1X55Y"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // Make functions globally accessible
+        window.firebaseLoginWithGoogle = async function() {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+                alert("✅ Google Sign-In Successful! Welcome " + user.displayName);
+                openDashboardFromGoogle(user);
+            } catch (error) {
+                alert("❌ Google Login Error: " + error.message);
+            }
+        };
+
+        window.initRecaptcha = function() {
+            if(!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    'size': 'invisible'
+                });
+            }
+        };
+
+        window.sendFirebaseSMSOTP = function() {
+            var phone = document.getElementById('regPhone').value.trim();
+            if(!/^[0-9]{10}$/.test(phone)) {
+                alert("⚠️ Sahi 10-digit mobile number dalo!");
+                return;
+            }
+            var formattedPhone = "+91" + phone;
+            window.initRecaptcha();
+            const appVerifier = window.recaptchaVerifier;
+
+            signInWithPhoneNumber(auth, formattedPhone, appVerifier)
+                .then((confirmationResult) => {
+                    window.confirmationResult = confirmationResult;
+                    alert("📱 Real SMS OTP sent to " + formattedPhone);
+                    document.getElementById('otpBox').style.display = 'block';
+                }).catch((error) => {
+                    alert("❌ SMS Gateway Error: " + error.message);
+                });
+        };
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -67,35 +130,6 @@
             padding-bottom: 10px;
         }
 
-        .scam-alert {
-            background: rgba(239, 68, 68, 0.12);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 16px;
-            font-size: 11px;
-            color: #fca5a5;
-            text-align: left;
-            line-height: 1.4;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 11px 14px;
-            margin-bottom: 15px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 13px;
-            outline: none;
-        }
-
-        .search-bar:focus {
-            border-color: #00f2fe;
-            box-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
-        }
-
         .auth-card {
             background: rgba(30, 41, 59, 0.5);
             padding: 18px;
@@ -103,22 +137,6 @@
             text-align: left;
             border: 1px solid rgba(0, 242, 254, 0.25);
             margin-bottom: 14px;
-        }
-
-        .auth-card h3 {
-            color: #ffffff;
-            font-size: 14px;
-            margin-bottom: 4px;
-            text-align: center;
-            font-weight: 700;
-        }
-
-        .secure-note {
-            color: #10b981;
-            font-size: 11px;
-            margin-bottom: 14px;
-            text-align: center;
-            display: block;
         }
 
         .form-group {
@@ -142,17 +160,6 @@
             color: #fff;
             font-size: 12.5px;
             outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .auth-card input:focus, .auth-card select:focus {
-            border-color: #00f2fe;
-            box-shadow: 0 0 8px rgba(0, 242, 254, 0.3);
-        }
-
-        .auth-card select option {
-            background: #0f172a;
-            color: #fff;
         }
 
         .action-btn {
@@ -166,25 +173,43 @@
             font-size: 13px;
             cursor: pointer;
             margin-top: 6px;
-            box-shadow: 0 4px 12px rgba(0, 242, 254, 0.3);
         }
 
-        .whatsapp-btn {
+        .social-btn {
             width: 100%;
             padding: 10px;
-            background: #25d366;
-            color: white;
-            border: none;
             border-radius: 8px;
-            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
             font-size: 12px;
+            font-weight: 600;
             cursor: pointer;
-            margin-top: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
+            margin-top: 8px;
         }
+
+        .social-btn.google { border-color: rgba(234, 67, 53, 0.5); }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #64748b;
+            font-size: 11px;
+            margin: 12px 0;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span { padding: 0 8px; }
 
         .switch-text {
             text-align: center;
@@ -198,179 +223,24 @@
             cursor: pointer;
             font-weight: 700;
         }
-
-        /* Dashboard & Profile */
-        .dashboard-box {
-            display: none;
-            background: rgba(15, 23, 42, 0.96);
-            padding: 18px;
-            border-radius: 14px;
-            text-align: left;
-            border: 1px solid rgba(0, 242, 254, 0.5);
-            margin-bottom: 14px;
-        }
-
-        .profile-card {
-            background: rgba(30, 41, 59, 0.85);
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 14px;
-            border: 1px solid rgba(0, 242, 254, 0.35);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar-img {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            border: 2px solid #00f2fe;
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-
-        .user-info {
-            overflow: hidden;
-            text-align: left;
-            flex-grow: 1;
-        }
-
-        .user-info h4 {
-            color: #00f2fe;
-            font-size: 14.5px;
-            font-weight: 700;
-        }
-
-        .user-info p {
-            color: #94a3b8;
-            font-size: 11.5px;
-        }
-
-        .role-badge {
-            display: inline-block;
-            background: linear-gradient(45deg, #f59e0b, #ef4444);
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 8px;
-            font-size: 10px;
-            font-weight: bold;
-            margin-top: 4px;
-        }
-
-        .market-category {
-            margin-bottom: 14px;
-        }
-
-        .market-category h4 {
-            color: #00f2fe;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
-
-        .category-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        .cat-card {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px 8px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .cat-card:hover {
-            background: rgba(0, 242, 254, 0.18);
-            border-color: #00f2fe;
-        }
-
-        .cat-card span {
-            font-size: 11.5px;
-            color: #e2e8f0;
-            font-weight: 600;
-            display: block;
-        }
-
-        .admin-panel-box {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 14px;
-        }
-
-        .admin-panel-box h5 {
-            color: #f59e0b;
-            font-size: 13px;
-            margin-bottom: 6px;
-        }
-
-        .logout-btn {
-            width: 100%;
-            padding: 10px;
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #ef4444;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 12px;
-            cursor: pointer;
-            margin-top: 14px;
-        }
-
-        .contact-box {
-            background: rgba(30, 41, 59, 0.6);
-            padding: 10px;
-            border-radius: 10px;
-            text-align: left;
-            border-left: 4px solid #00f2fe;
-            margin-top: 14px;
-        }
-
-        .contact-box p {
-            color: #cbd5e1;
-            font-size: 11.5px;
-        }
-
-        .security-footer {
-            margin-top: 14px;
-            font-size: 10px;
-            color: #64748b;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="header-badge">Universal Service Hub</div>
+        <div class="header-badge">Firebase Live Powered Portal</div>
 
         <h1>All In One</h1>
-        <p class="subtitle">Ultimate Digital Marketplace & Portal System</p>
+        <p class="subtitle">Universal Marketplace Portal</p>
 
-        <!-- Fraud Alert -->
-        <div class="scam-alert">
-            🛡️ <b>Fraud Warning:</b> Advance payment ke liye personal UPI ya OTP kisi ko mat do! All In One staff kabhi confidential details nahi maangta.
-        </div>
+        <div id="recaptcha-container"></div>
 
-        <!-- Universal Search Bar -->
-        <input type="text" class="search-bar" id="searchBox" placeholder="🔍 Search All Services, Vendors, Products..." onkeyup="filterCategories()">
-
-        <!-- 1. LOGIN SECTION -->
+        <!-- LOGIN SECTION -->
         <div class="auth-card" id="loginSection">
-            <h3>Role-Based Portal Login</h3>
-            <span class="secure-note">🔒 SHA-256 Encrypted Security</span>
+            <h3 style="text-align: center; margin-bottom: 10px;">Portal Login</h3>
 
             <div class="form-group">
-                <label>Select Account Role</label>
+                <label>Select Role</label>
                 <select id="loginRole">
                     <option value="Customer">Customer Portal</option>
                     <option value="Seller">Seller / Vendor Portal</option>
@@ -389,25 +259,19 @@
             </div>
 
             <button class="action-btn" onclick="handleSecureLogin()">Login Securely</button>
-            <button class="whatsapp-btn" onclick="openWhatsAppInquiry('General Support')">💬 Contact Official WhatsApp Support</button>
+
+            <div class="divider"><span>OR CONTINUE WITH</span></div>
+
+            <button class="social-btn google" onclick="window.firebaseLoginWithGoogle()">🌐 Sign in with Google</button>
 
             <div class="switch-text">
-                Naye User Ho? <span onclick="showRegister()">Pehle Register Karo</span>
+                Naye User Ho? <span onclick="showRegister()">Register Account</span>
             </div>
         </div>
 
-        <!-- 2. REGISTRATION SECTION -->
+        <!-- REGISTRATION SECTION -->
         <div class="auth-card" id="registerSection" style="display: none;">
-            <h3>New Account Registration</h3>
-            <span class="secure-note">📱 Phone OTP & Unique Username Check</span>
-
-            <div class="form-group">
-                <label>Register As</label>
-                <select id="regRole">
-                    <option value="Customer">Customer</option>
-                    <option value="Seller">Seller (1 Month Free Trial)</option>
-                </select>
-            </div>
+            <h3 style="text-align: center; margin-bottom: 10px;">New Account Registration</h3>
 
             <div class="form-group">
                 <label>Full Name</label>
@@ -415,165 +279,24 @@
             </div>
 
             <div class="form-group">
-                <label>Choose Unique Username</label>
-                <input type="text" id="regUsername" placeholder="e.g. irfan_ale">
-            </div>
-
-            <div class="form-group">
                 <label>Mobile Number (10 Digits)</label>
                 <input type="text" id="regPhone" placeholder="10 digit phone number">
             </div>
 
-            <div class="form-group">
-                <label>Gender Avatar</label>
-                <select id="regGender">
-                    <option value="Male">Male ♂️</option>
-                    <option value="Female">Female ♀️</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Create Strong Password (Min 6 chars)</label>
-                <input type="password" id="regPass" placeholder="At least 6 characters">
-            </div>
-
-            <button class="action-btn" id="otpBtn" onclick="sendRegistrationOTP()">Verify Details & Send OTP</button>
+            <button class="action-btn" onclick="window.sendFirebaseSMSOTP()">Send Real SMS OTP</button>
 
             <div id="otpBox" style="display:none; margin-top:12px;">
-                <input type="text" id="otpInput" placeholder="Enter Received 4-Digit OTP">
-                <button class="action-btn" onclick="verifyAndCompleteReg()">Verify OTP & Create Account</button>
+                <input type="text" id="otpInput" placeholder="Enter Received SMS OTP">
+                <button class="action-btn" onclick="verifyFirebaseOTP()">Verify OTP & Login</button>
             </div>
 
             <div class="switch-text">
-                Pehle se account hai? <span onclick="showLogin()">Yahan Login Karo</span>
+                Pehle se account hai? <span onclick="showLogin()">Login Here</span>
             </div>
-        </div>
-
-        <!-- 3. DASHBOARD -->
-        <div class="dashboard-box" id="dashboardBox">
-            <div class="profile-card">
-                <img id="userAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=MaleHunter" class="user-avatar-img" alt="Avatar">
-                <div class="user-info">
-                    <h4 id="dashUserName">User</h4>
-                    <p id="dashUserHandle">@username</p>
-                    <span class="role-badge" id="roleBadgeDisplay">Role: Customer</span>
-                </div>
-            </div>
-
-            <!-- Owner Admin Panel -->
-            <div class="admin-panel-box" id="adminPanelBox" style="display: none;">
-                <h5>👑 Universal Owner Admin Panel</h5>
-                <p style="font-size: 11px; color: #cbd5e1; margin-bottom: 8px;">Manage Vendors & Add Unlimited Categories:</p>
-                <div id="pendingRequestsList">
-                    <div style="font-size: 11px; color: #94a3b8; margin-bottom: 6px;">Koi pending vendor approval nahi hai.</div>
-                </div>
-                <button class="action-btn" onclick="addNewSlot()" style="padding: 7px; font-size: 11.5px;">+ Add Unlimited Category Slot</button>
-            </div>
-
-            <!-- Seller Panel -->
-            <div id="sellerPanelBox" style="display: none; margin-bottom: 12px; background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.4); padding: 10px; border-radius: 8px;">
-                <h5 style="color: #00f2fe; font-size: 12.5px; margin-bottom: 4px;">🏪 Seller Dashboard Active</h5>
-                <p style="font-size: 11px; color: #cbd5e1; margin-bottom: 6px;">Apne hotel rooms, services ya products list karo.</p>
-                <button class="action-btn" onclick="openSellerListing()" style="padding: 7px; font-size: 11.5px;">+ List Product / Service</button>
-            </div>
-
-            <!-- Categories -->
-            <div id="categoriesContainer">
-                <div class="market-category searchable-cat" data-name="digital marketing online forms services">
-                    <h4>📢 Digital Services & Marketing</h4>
-                    <div class="category-grid">
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Digital Marketing')">
-                            <span>🚀 Digital Marketing</span>
-                        </div>
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Online Form Filling')">
-                            <span>📝 Online Forms</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="market-category searchable-cat" data-name="hotel room bookings travel stays">
-                    <h4>🏨 Hotel Room Bookings & Stays</h4>
-                    <div class="category-grid">
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Hotel Room Booking')">
-                            <span>🛏️ Book Rooms</span>
-                        </div>
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Room Availability')">
-                            <span>🔑 Check Status</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="market-category searchable-cat" data-name="education courses study material">
-                    <h4>📚 Education & Learning Hub</h4>
-                    <div class="category-grid">
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Study Material')">
-                            <span>📖 Study Material</span>
-                        </div>
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Online Classes')">
-                            <span>🎓 Online Classes</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="market-category searchable-cat" data-name="gaming tournaments esports ff bgmi">
-                    <h4>🎮 Gaming & Esports Arena</h4>
-                    <div class="category-grid">
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Gaming Tournaments')">
-                            <span>🏆 Free Fire / BGMI</span>
-                        </div>
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Custom Rooms')">
-                            <span>⚡ Custom Rooms</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="market-category searchable-cat" data-name="clothes market footwear fashion apparel">
-                    <h4>👗 Fashion & Footwear Market</h4>
-                    <div class="category-grid">
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Footwear Order')">
-                            <span>👞 Footwear & Shoes</span>
-                        </div>
-                        <div class="cat-card" onclick="openWhatsAppInquiry('Fashion Apparel')">
-                            <span>👕 Fashion & Apparel</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <button class="whatsapp-btn" onclick="openWhatsAppInquiry('Universal General Help')">💬 WhatsApp Official Support</button>
-            <button class="logout-btn" onclick="handleLogout()">Logout Session</button>
-        </div>
-
-        <div class="contact-box">
-            <p>📍 Pashkum Village, Kargil, Ladakh</p>
-        </div>
-
-        <div class="security-footer">
-            <span>🛡️ SHA-256 Encrypted</span>
-            <span>•</span>
-            <span>🔒 Universal Hub</span>
-            <span>•</span>
-            <span>⚡ Multi-Vendor</span>
         </div>
     </div>
 
-    <!-- JavaScript Logic -->
     <script>
-        var registeredUsers = JSON.parse(localStorage.getItem('all_in_one_users')) || {};
-        var currentUserSession = null;
-
-        const MALE_AVATAR = "https://api.dicebear.com/7.x/bottts/svg?seed=MaleHunter";
-        const FEMALE_AVATAR = "https://api.dicebear.com/7.x/bottts/svg?seed=FemaleHunter";
-        const OFFICIAL_WHATSAPP = "919000000000";
-
-        const MASTER_ADMIN_USER = "irfan_owner_admin";
-        const MASTER_ADMIN_HASH = CryptoJS.SHA256("Kargil@AllInOne#2026").toString();
-
-        function openWhatsAppInquiry(serviceName) {
-            var msg = "Hello Admin, mujhe All In One portal par '" + serviceName + "' ke baare mein inquiry karni hai.";
-            window.open("https://wa.me/" + OFFICIAL_WHATSAPP + "?text=" + encodeURIComponent(msg), '_blank');
-        }
-
         function showRegister() {
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('registerSection').style.display = 'block';
@@ -582,188 +305,31 @@
         function showLogin() {
             document.getElementById('registerSection').style.display = 'none';
             document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('otpBox').style.display = 'none';
-            document.getElementById('otpBtn').style.display = 'block';
-        }
-
-        var tempRegData = {};
-
-        function sendRegistrationOTP() {
-            var name = document.getElementById('regName').value.trim();
-            var username = document.getElementById('regUsername').value.trim().toLowerCase();
-            var phone = document.getElementById('regPhone').value.trim();
-            var pass = document.getElementById('regPass').value.trim();
-            var role = document.getElementById('regRole').value;
-            var gender = document.getElementById('regGender').value;
-
-            if(name.length < 3) {
-                alert("⚠️ Error: Full Name kam se kam 3 letters ka hona chahiye!");
-                return;
-            }
-
-            if(username.length < 4 || !/^[a-zA-Z0-9_]+$/.test(username)) {
-                alert("⚠️ Error: Username kam se kam 4 characters ka aur sirf letters/numbers/underscore me hona chahiye!");
-                return;
-            }
-
-            if(!/^[0-9]{10}$/.test(phone)) {
-                alert("⚠️ Error: Direct 10-digit mobile number dalo!");
-                return;
-            }
-
-            if(pass.length < 6) {
-                alert("⚠️ Error: Password kam se kam 6 characters ka hona chahiye!");
-                return;
-            }
-
-            if(registeredUsers[username] || username === MASTER_ADMIN_USER) {
-                alert("⚠️ Error: Yeh username pehle se maujood hai! Koi doosra username chuno.");
-                return;
-            }
-
-            var generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-            var passHash = CryptoJS.SHA256(pass).toString();
-
-            tempRegData = {
-                name: name,
-                username: username,
-                phone: phone,
-                passHash: passHash,
-                role: role,
-                gender: gender,
-                otp: generatedOtp
-            };
-
-            alert("🔒 Secure Gateway: OTP [" + generatedOtp + "] bhej diya gaya hai " + phone + " par.");
-            document.getElementById('otpBtn').style.display = 'none';
-            document.getElementById('otpBox').style.display = 'block';
-        }
-
-        function verifyAndCompleteReg() {
-            var inputOtp = document.getElementById('otpInput').value.trim();
-            if(inputOtp === tempRegData.otp) {
-                delete tempRegData.otp;
-                registeredUsers[tempRegData.username] = tempRegData;
-                localStorage.setItem('all_in_one_users', JSON.stringify(registeredUsers));
-                alert("✅ Registration Successful! Account encrypted. Ab login karo.");
-                showLogin();
-            } else {
-                alert("❌ Security Error: Galat OTP code hai!");
-            }
         }
 
         function handleSecureLogin() {
-            var role = document.getElementById('loginRole').value;
-            var username = document.getElementById('loginUsername').value.trim().toLowerCase();
-            var pass = document.getElementById('loginPass').value.trim();
-
-            if(username === "" || pass === "") {
-                alert("⚠️ Error: Username aur Password dono dalo!");
-                return;
-            }
-
-            var inputHash = CryptoJS.SHA256(pass).toString();
-
-            if(role === "Admin") {
-                if(username === MASTER_ADMIN_USER && inputHash === MASTER_ADMIN_HASH) {
-                    currentUserSession = {
-                        name: "Irfan Ali (Master Owner)",
-                        username: "admin",
-                        role: "Admin",
-                        gender: "Male"
-                    };
-                    openDashboard();
-                    return;
-                } else {
-                    alert("❌ Authentication Failed: Owner Admin details galat hain!");
-                    return;
-                }
-            }
-
-            if(!registeredUsers[username]) {
-                alert("❌ Authentication Failed: Yeh username nahi mila!");
-                return;
-            }
-
-            var userObj = registeredUsers[username];
-
-            if(userObj.role !== role) {
-                alert("❌ Access Denied: Selected Role aapke account se match nahi kar raha!");
-                return;
-            }
-
-            if(userObj.passHash !== inputHash) {
-                alert("❌ Authentication Failed: Galat Password!");
-                return;
-            }
-
-            currentUserSession = userObj;
-            openDashboard();
-        }
-
-        function openDashboard() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('registerSection').style.display = 'none';
-            document.getElementById('dashboardBox').style.display = 'block';
-
-            var avatarUrl = (currentUserSession.gender === "Female") ? FEMALE_AVATAR : MALE_AVATAR;
-            document.getElementById('userAvatar').src = avatarUrl;
-
-            document.getElementById('dashUserName').innerText = currentUserSession.name;
-            document.getElementById('dashUserHandle').innerText = "@" + currentUserSession.username;
-            document.getElementById('roleBadgeDisplay').innerText = "Role: " + currentUserSession.role;
-
-            if(currentUserSession.role === "Admin") {
-                document.getElementById('adminPanelBox').style.display = 'block';
-                document.getElementById('sellerPanelBox').style.display = 'none';
-            } else if(currentUserSession.role === "Seller") {
-                document.getElementById('adminPanelBox').style.display = 'none';
-                document.getElementById('sellerPanelBox').style.display = 'block';
+            var u = document.getElementById('loginUsername').value.trim();
+            var p = document.getElementById('loginPass').value.trim();
+            if(u === "" || p === "") {
+                alert("⚠️ Username aur Password dono dalo!");
             } else {
-                document.getElementById('adminPanelBox').style.display = 'none';
-                document.getElementById('sellerPanelBox').style.display = 'none';
+                alert("Login Processed for " + u);
             }
         }
 
-        function addNewSlot() {
-            var slotName = prompt("Nayi Universal Category / Slot ka naam enter karo:");
-            if(slotName) {
-                var container = document.getElementById('categoriesContainer');
-                var newDiv = document.createElement('div');
-                newDiv.className = 'market-category searchable-cat';
-                newDiv.setAttribute('data-name', slotName.toLowerCase());
-                newDiv.innerHTML = '<h4>📌 ' + slotName + '</h4><div class="category-grid"><div class="cat-card" onclick="openWhatsAppInquiry(\'' + slotName + '\')"><span>💬 Inquiry / Order</span></div><div class="cat-card" onclick="alert(\'Managing ' + slotName + '...\')"><span>⚙️ Manage Slot</span></div></div>';
-                container.appendChild(newDiv);
-                alert("Naya Universal Slot '" + slotName + "' successfully add ho gaya hai!");
-            }
+        function openDashboardFromGoogle(user) {
+            alert("Welcome " + user.displayName + " (" + user.email + ")");
         }
 
-        function openSellerListing() {
-            var item = prompt("Apna Universal Product, Service ya Hotel Room naam dalo:");
-            if(item) {
-                alert("Listing request for '" + item + "' Owner Admin ko bhej di gayi hai!");
+        function verifyFirebaseOTP() {
+            var code = document.getElementById('otpInput').value.trim();
+            if(window.confirmationResult) {
+                window.confirmationResult.confirm(code).then((result) => {
+                    alert("✅ Phone Verified Successfully!");
+                }).catch((error) => {
+                    alert("❌ Invalid OTP Code!");
+                });
             }
-        }
-
-        function filterCategories() {
-            var query = document.getElementById('searchBox').value.toLowerCase();
-            var cats = document.getElementsByClassName('searchable-cat');
-            for(var i = 0; i < cats.length; i++) {
-                var name = cats[i].getAttribute('data-name');
-                if(name.indexOf(query) > -1) {
-                    cats[i].style.display = "block";
-                } else {
-                    cats[i].style.display = "none";
-                }
-            }
-        }
-
-        function handleLogout() {
-            currentUserSession = null;
-            document.getElementById('dashboardBox').style.display = 'none';
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPass').value = '';
         }
     </script>
 </body>
