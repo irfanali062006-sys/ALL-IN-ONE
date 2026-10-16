@@ -28,7 +28,6 @@
             flex-direction: column;
         }
 
-        /* Glassmorphism Navbar */
         .navbar {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(16px);
@@ -110,7 +109,6 @@
             margin-bottom: 25px;
         }
 
-        /* Auth Screen */
         .auth-wrapper {
             max-width: 440px;
             margin: 20px auto;
@@ -222,7 +220,6 @@
         .divider::before { left: 0; }
         .divider::after { right: 0; }
 
-        /* Category Boxes Grid */
         .category-boxes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -255,7 +252,7 @@
 
         .items-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
         }
 
@@ -277,7 +274,7 @@
             padding: 15px;
         }
 
-        /* AI Voice & Assistant Widget */
+        /* AI Widget */
         .ai-widget {
             position: fixed;
             bottom: 25px;
@@ -373,7 +370,6 @@
         }
         .btn-voice.listening { background: #ef4444; }
 
-        /* Profile Modal / Card */
         .profile-card {
             max-width: 500px;
             margin: 0 auto;
@@ -502,7 +498,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h2 id="cat-page-title"><i class="fa-solid fa-box"></i> Category</h2>
                     <button id="btn-add-item" class="btn btn-primary" style="width: auto; margin: 0; display: none;" onclick="addNewItemToCategory()">
-                        <i class="fa-solid fa-plus"></i> Add Item
+                        <i class="fa-solid fa-plus"></i> Add Item & Location
                     </button>
                 </div>
 
@@ -526,8 +522,8 @@
                 </div>
 
                 <div class="form-group">
-                    <i class="fa-solid fa-image"></i>
-                    <input type="text" id="profile-photo-url-input" class="form-control" placeholder="Profile Photo Image URL">
+                    <i class="fa-solid fa-camera"></i>
+                    <input type="file" id="profile-file-input" class="form-control" accept="image/*" onchange="previewProfileImage(event)">
                 </div>
 
                 <button class="btn btn-primary" onclick="saveUserProfile()">
@@ -539,7 +535,7 @@
 
     </div>
 
-    <!-- VOICE & ACTION AI ASSISTANT WIDGET -->
+    <!-- AI WIDGET -->
     <div class="ai-widget" id="ai-widget-container" style="display: none;">
         <div class="ai-chat-window" id="ai-chat-window">
             <div class="ai-chat-header">
@@ -550,7 +546,7 @@
                 <div class="msg msg-ai" id="ai-welcome-msg">Namaste! Main aapka AI Assistant hoon.</div>
             </div>
             <div class="ai-chat-input">
-                <input type="text" id="ai-text-input" placeholder="Ask AI or command fix..." onkeypress="handleAIPress(event)">
+                <input type="text" id="ai-text-input" placeholder="Ask AI..." onkeypress="handleAIPress(event)">
                 <button class="btn-voice" id="btn-voice-mic" onclick="toggleVoiceRecognition()"><i class="fa-solid fa-microphone"></i></button>
             </div>
         </div>
@@ -576,54 +572,35 @@
         let userRole = 'customer';
         let currentAuthMode = 'login';
         let activeCategory = null;
+        let tempProfileBase64 = '';
         let isListening = false;
         let speechRecognizer = null;
 
         const categoryDatabase = {
             accessories: [
-                { id: 1, title: "Pro TWS Earbuds AirDots", price: "₹1,299", image: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400" },
-                { id: 2, title: "33W Fast Type-C Charger", price: "₹799", image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400" }
+                { id: 1, title: "Pro TWS Earbuds AirDots", price: "₹1,299", location: "Khomini Chowk, Kargil", image: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400" },
+                { id: 2, title: "33W Fast Type-C Charger", price: "₹799", location: "Compound Computer, Kargil", image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400" }
             ],
             fashion: [
-                { id: 101, title: "Urban Oversized Street Hoodie", price: "₹1,499", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400" },
-                { id: 102, title: "Classic Denim Jacket", price: "₹1,999", image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400" }
+                { id: 101, title: "Urban Oversized Street Hoodie", price: "₹1,499", location: "Main Market Kargil", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400" }
             ],
             digital: [
-                { id: 201, title: "Mobile Screen & Folder Replacement", price: "₹2,499", image: "https://images.unsplash.com/photo-1597740985671-2a8a3b80502e?w=400" },
-                { id: 202, title: "Custom Business Logo Design", price: "₹999", image: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400" }
+                { id: 201, title: "Mobile Screen & Folder Replacement", price: "₹2,499", location: "Compound Computer Shop", image: "https://images.unsplash.com/photo-1597740985671-2a8a3b80502e?w=400" }
             ],
             tournaments: [
-                { id: 301, title: "Free Fire India Squad Battle", price: "Entry: ₹50 | Prize: ₹2,000", image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400" },
-                { id: 302, title: "BGMI Erangel Championship", price: "Entry: ₹100 | Prize: ₹5,000", image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400" },
-                { id: 303, title: "100+ Games Multi-Esports League", price: "Entry: Free | Prize: Trophy", image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400" }
+                { id: 301, title: "Free Fire India Squad Battle (Online/Offline)", price: "Entry: ₹50 | Prize: ₹2,000", location: "Esports Arena Kargil", image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400" },
+                { id: 302, title: "BGMI Erangel Championship Lobbies", price: "Entry: ₹100 | Prize: ₹5,000", location: "Online Room / LAN", image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400" }
             ]
         };
-
-        // Monthly Owner Password Rotation
-        function checkOwnerMonthlyRotation(email) {
-            if (email === "irfanali062006@gmail.com") {
-                let lastRotation = localStorage.getItem("owner_rot_date");
-                const now = Date.now();
-                const thirtyDays = 2592000000;
-                if (!lastRotation || (now - parseInt(lastRotation)) > thirtyDays) {
-                    let newTempPass = "Owner@" + Math.random().toString(36).slice(-6);
-                    localStorage.setItem("owner_rot_date", now);
-                    localStorage.setItem("owner_auto_pass", newTempPass);
-                    console.log(`[SECURITY]: Owner 1-month pass rotated & sent to irfanali062006@gmail.com. Pass: ${newTempPass}`);
-                }
-            }
-        }
 
         function handleOwnerForgotPassword() {
             const emailInput = document.getElementById('auth-email').value.trim();
             if (emailInput !== "irfanali062006@gmail.com") {
-                alert("Invalid Credentials: Password reset is exclusively available for irfanali062006@gmail.com!");
+                alert("Invalid Credentials: Password reset is exclusively for irfanali062006@gmail.com!");
                 return;
             }
             auth.sendPasswordResetEmail(emailInput)
-                .then(() => {
-                    alert("Owner password reset link dispatched to irfanali062006@gmail.com!");
-                })
+                .then(() => alert("Owner password reset link dispatched to irfanali062006@gmail.com!"))
                 .catch(err => alert(err.message));
         }
 
@@ -632,7 +609,6 @@
                 currentUser = user;
                 if (user.email === "irfanali062006@gmail.com") {
                     userRole = 'owner';
-                    checkOwnerMonthlyRotation(user.email);
                 } else {
                     userRole = 'customer';
                 }
@@ -650,7 +626,7 @@
             document.getElementById('tab-register-btn').className = `auth-tab-btn ${mode === 'register' ? 'active' : ''}`;
             document.getElementById('btn-auth-submit').innerHTML = mode === 'login' ? 
                 '<i class="fa-solid fa-right-to-bracket"></i> Login to Portal' : 
-                '<i class="fa-solid fa-user-plus"></i> Create New Account';
+                '<i class="fa-solid fa-user-plus"></i> Register & Verify Email';
         }
 
         function handleEmailAuth() {
@@ -658,17 +634,20 @@
             const password = document.getElementById('auth-password').value;
             if (!email || !password) return alert("Please fill both Email and Password!");
 
-            // NO BLOCKING / NO BAN - Just Invalid Warning for Owner Elevation
-            if (userRole === 'owner' && email !== "irfanali062006@gmail.com") {
-                alert("Invalid Owner Credentials / Unauthorized Email!");
-                return;
-            }
-
             if (currentAuthMode === 'login') {
-                auth.signInWithEmailAndPassword(email, password).catch(err => alert("Invalid Credentials: " + err.message));
+                auth.signInWithEmailAndPassword(email, password)
+                    .then(res => {
+                        if (res.user.email !== "irfanali062006@gmail.com" && email.includes("owner")) {
+                            alert("Invalid Owner Credentials / Unauthorized Email!");
+                        }
+                    })
+                    .catch(err => alert("Invalid Credentials: " + err.message));
             } else {
                 auth.createUserWithEmailAndPassword(email, password)
-                    .then(() => alert("Registration Successful! Your profile has been auto-created."))
+                    .then(res => {
+                        res.user.sendEmailVerification();
+                        alert("Registration Successful! Verification link has been sent to your email. Please check and verify.");
+                    })
                     .catch(err => alert(err.message));
             }
         }
@@ -703,7 +682,6 @@
             auth.signOut();
         }
 
-        // Profile Auto-Save & Loading Logic
         function loadUserProfile() {
             const uid = currentUser.uid || currentUser.email;
             const savedProfile = JSON.parse(localStorage.getItem(`user_profile_${uid}`)) || {};
@@ -715,21 +693,30 @@
             document.getElementById('nav-avatar').src = photo;
             document.getElementById('profile-avatar-lg').src = photo;
             document.getElementById('profile-name-input').value = name;
-            document.getElementById('profile-photo-url-input').value = savedProfile.photo || '';
             document.getElementById('profile-email-title').innerText = currentUser.email || currentUser.phoneNumber || "User Profile";
+        }
+
+        function previewProfileImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempProfileBase64 = e.target.result;
+                    document.getElementById('profile-avatar-lg').src = tempProfileBase64;
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         function saveUserProfile() {
             const uid = currentUser.uid || currentUser.email;
             const newName = document.getElementById('profile-name-input').value.trim();
-            const newPhoto = document.getElementById('profile-photo-url-input').value.trim();
 
             const profileData = {
                 name: newName || "User",
-                photo: newPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(newName || "User")}&background=6366f1&color=fff`
+                photo: tempProfileBase64 || document.getElementById('profile-avatar-lg').src
             };
 
-            // Auto-Save in LocalStorage & update UI
             localStorage.setItem(`user_profile_${uid}`, JSON.stringify(profileData));
             loadUserProfile();
 
@@ -768,13 +755,13 @@
             if (userRole === 'owner') {
                 badge.innerText = 'Owner (Super Admin)';
                 badge.className = 'role-badge role-owner';
-                aiNameElem.innerText = 'Stanzin (Owner AI)';
-                aiWelcomeElem.innerText = 'Juley Boss Irfan! Main aapka personal assistant Stanzin hoon. System fully active hai.';
+                aiNameElem.innerText = 'Asifa (Owner AI)';
+                aiWelcomeElem.innerText = 'Juley Boss Irfan! Main Asifa hoon. Cash on hand aur direct file upload active hai.';
             } else {
-                badge.innerText = 'Customer';
+                badge.innerText = 'Customer / Seller';
                 badge.className = 'role-badge role-customer';
                 aiNameElem.innerText = 'Zahra (Help AI)';
-                aiWelcomeElem.innerText = 'Namaste! Main Zahra hoon. Categories aur Game Tournaments se judi koi bhi madad chahiye toh poochiye!';
+                aiWelcomeElem.innerText = 'Namaste! Main Zahra hoon. Store pickup aur tournament lobbies me aapki sahayata karungi!';
             }
         }
 
@@ -793,7 +780,7 @@
             };
             titleElem.innerHTML = titles[catKey] || 'Category Page';
 
-            document.getElementById('btn-add-item').style.display = (userRole === 'owner') ? 'block' : 'none';
+            document.getElementById('btn-add-item').style.display = 'block';
             renderCategoryItems(categoryDatabase[catKey] || []);
         }
 
@@ -807,8 +794,9 @@
                         <img src="${item.image}" class="item-img" alt="${item.title}">
                         <div class="item-info">
                             <h4 style="font-size: 15px; margin-bottom: 5px;">${item.title}</h4>
-                            <p style="color: #10b981; font-weight: 700; font-size: 14px; margin-bottom: 10px;">${item.price}</p>
-                            <button class="btn btn-primary" style="padding: 6px; font-size: 12px; margin: 0;">${activeCategory === 'tournaments' ? 'Join Tournament' : 'Buy Now'}</button>
+                            <p style="color: #10b981; font-weight: 700; font-size: 14px; margin-bottom: 5px;">${item.price}</p>
+                            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;"><i class="fa-solid fa-location-dot"></i> Location: ${item.location || 'Kargil Shop'}</p>
+                            <button class="btn btn-primary" style="padding: 6px; font-size: 12px; margin: 0;">${activeCategory === 'tournaments' ? 'Join Tournament' : 'Buy (Cash on Hand)'}</button>
                         </div>
                     </div>
                 `;
@@ -816,20 +804,33 @@
         }
 
         function addNewItemToCategory() {
-            const title = prompt("Enter Name/Title:");
-            const price = prompt("Enter Price or Details:");
-            if (title && price && activeCategory) {
-                categoryDatabase[activeCategory].push({
-                    id: Date.now(),
-                    title: title,
-                    price: price,
-                    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400"
-                });
-                renderCategoryItems(categoryDatabase[activeCategory]);
+            const title = prompt("Enter Item / Tournament Name:");
+            const price = prompt("Enter Price or Entry Fee (e.g. ₹499 or Entry: ₹50):");
+            const location = prompt("Enter Shop / Pickup Location (e.g. Khomini Chowk, Kargil):");
+            
+            if (title && price) {
+                let input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = e => {
+                    let file = e.target.files[0];
+                    let reader = new FileReader();
+                    reader.onload = event => {
+                        categoryDatabase[activeCategory].push({
+                            id: Date.now(),
+                            title: title,
+                            price: price,
+                            location: location || 'Kargil',
+                            image: event.target.result
+                        });
+                        renderCategoryItems(categoryDatabase[activeCategory]);
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
             }
         }
 
-        // AI Assistant
         function toggleAIChat() {
             const win = document.getElementById('ai-chat-window');
             win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
@@ -855,17 +856,9 @@
                 const q = text.toLowerCase();
 
                 if (userRole === 'owner') {
-                    if (q.includes('fix') || q.includes('issue') || q.includes('bug') || q.includes('work') || q.includes('profile')) {
-                        reply = "🛠️ [Stanzin Action]: Boss Irfan, maine profile auto-save aur invalid credentials handling system ko 100% update kar diya hai!";
-                    } else {
-                        reply = "Juley Boss Irfan! Main Stanzin hoon. System fully active aur auto-save mode me hai.";
-                    }
+                    reply = "🛠️ [Asifa Action]: Boss Irfan, location filtering, cash on hand checkout aur direct file upload features puri tarah active kar diye gaye hain!";
                 } else {
-                    if (q.includes('profile') || q.includes('photo') || q.includes('save')) {
-                        reply = "Aap Top Bar me apni Profile Avatar par click karke Name aur Photo URL update kar sakte hain. Yeh automatic save hota hai!";
-                    } else {
-                        reply = "Hello! Main Zahra hoon. Categories aur Game Tournaments me se kisi par bhi madad ke liye bataiye.";
-                    }
+                    reply = "Hello! Main Zahra hoon. Aap items par click karke shop location dekh sakte hain aur Cash on Hand ke zariye order kar sakte hain.";
                 }
 
                 msgs.innerHTML += `<div class="msg msg-ai">${reply}</div>`;
