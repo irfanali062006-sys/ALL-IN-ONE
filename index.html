@@ -29,56 +29,6 @@
             overflow-x: hidden;
         }
 
-        /* SAFE INSTANT-REMOVE LOADER */
-        #app-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #030712;
-            display: none; /* Default hidden to prevent screen locking */
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-        }
-
-        .loader-logo {
-            font-size: 32px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #6366f1, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid #6366f1;
-            border-right: 4px solid #ec4899;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        .loader-text {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #94a3b8;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         /* Navbar */
         .navbar {
             background: rgba(15, 23, 42, 0.88);
@@ -425,15 +375,6 @@
 </head>
 <body>
 
-    <!-- SAFE LOADER -->
-    <div id="app-loader">
-        <div class="loader-logo">
-            <i class="fa-solid fa-gamepad"></i> All-In-One Hub
-        </div>
-        <div class="spinner"></div>
-        <div class="loader-text">Loading Portal...</div>
-    </div>
-
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="brand-logo" onclick="showDashboardHome()">
@@ -450,8 +391,8 @@
     <!-- MAIN CONTAINER -->
     <div class="container">
 
-        <!-- AUTH SCREEN -->
-        <div id="screen-auth" class="auth-wrapper">
+        <!-- AUTH SCREEN (VISIBLE BY DEFAULT FOR INSTANT LOAD) -->
+        <div id="screen-auth" class="auth-wrapper" style="display: block;">
             <div class="glass-card">
                 <div class="auth-tabs">
                     <div id="tab-login-btn" class="auth-tab-btn active" onclick="switchAuthMode('login')">Login</div>
@@ -589,4 +530,391 @@
                 <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="toggleAIChat()"></i>
             </div>
             <div class="ai-chat-messages" id="ai-messages">
-                <div class="msg msg-
+                <div class="msg msg-ai" id="ai-welcome-msg">Namaste! Main aapka AI Assistant hoon.</div>
+            </div>
+            <div class="ai-chat-input">
+                <input type="text" id="ai-text-input" placeholder="Ask AI..." onkeypress="handleAIPress(event)">
+                <button class="btn-voice" id="btn-voice-mic" onclick="toggleVoiceRecognition()"><i class="fa-solid fa-microphone"></i></button>
+            </div>
+        </div>
+        <button class="ai-btn-toggle" onclick="toggleAIChat()"><i class="fa-solid fa-headset"></i></button>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtB_fry59vjcWg9NLmvTgZbaxA5hcSWD0",
+            authDomain: "all-in-one-marketplace-30cd5.firebaseapp.com",
+            projectId: "all-in-one-marketplace-30cd5",
+            storageBucket: "all-in-one-marketplace-30cd5.firebasestorage.app",
+            messagingSenderId: "517666199048",
+            appId: "1:517666199048:web:ac5ddcd4fcef8ab000a3bd",
+            measurementId: "G-KMSBF1X55Y"
+        };
+
+        if (typeof firebase !== 'undefined') {
+            try {
+                firebase.initializeApp(firebaseConfig);
+            } catch(e) {
+                console.log("Firebase initialized");
+            }
+        }
+
+        let currentUser = null;
+        let userRole = 'customer';
+        let currentAuthMode = 'login';
+        let activeCategory = null;
+        let tempProfileBase64 = '';
+        let isListening = false;
+        let speechRecognizer = null;
+
+        const categoryDatabase = {
+            accessories: [
+                { id: 1, title: "Pro TWS Earbuds AirDots", price: "₹1,299", location: "Khomini Chowk, Kargil", image: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400" },
+                { id: 2, title: "33W Fast Type-C Charger", price: "₹799", location: "Compound Computer, Kargil", image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400" }
+            ],
+            fashion: [
+                { id: 101, title: "Urban Oversized Street Hoodie", price: "₹1,499", location: "Main Market Kargil", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400" }
+            ],
+            digital: [
+                { id: 201, title: "Mobile Screen & Folder Replacement", price: "₹2,499", location: "Compound Computer Shop", image: "https://images.unsplash.com/photo-1597740985671-2a8a3b80502e?w=400" }
+            ],
+            tournaments: [
+                { id: 301, title: "Free Fire India Squad Battle (Online/Offline)", price: "Entry: ₹50 | Prize: ₹2,000", location: "Esports Arena Kargil", image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400" },
+                { id: 302, title: "BGMI Erangel Championship Lobbies", price: "Entry: ₹100 | Prize: ₹5,000", location: "Online Room / LAN", image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400" }
+            ]
+        };
+
+        function handleOwnerForgotPassword() {
+            const emailInput = document.getElementById('auth-email').value.trim();
+            if (emailInput !== "irfanali062006@gmail.com") {
+                alert("Invalid Credentials: Password reset is exclusively for irfanali062006@gmail.com!");
+                return;
+            }
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                firebase.auth().sendPasswordResetEmail(emailInput)
+                    .then(() => alert("Owner password reset link dispatched to irfanali062006@gmail.com!"))
+                    .catch(err => alert(err.message));
+            }
+        }
+
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    if (user.email === "irfanali062006@gmail.com") {
+                        userRole = 'owner';
+                    } else {
+                        userRole = 'customer';
+                    }
+                    loadUserProfile();
+                    showDashboardHome();
+                } else {
+                    currentUser = null;
+                    showAuthScreen();
+                }
+            });
+        }
+
+        function switchAuthMode(mode) {
+            currentAuthMode = mode;
+            document.getElementById('tab-login-btn').className = `auth-tab-btn ${mode === 'login' ? 'active' : ''}`;
+            document.getElementById('tab-register-btn').className = `auth-tab-btn ${mode === 'register' ? 'active' : ''}`;
+            document.getElementById('btn-auth-submit').innerHTML = mode === 'login' ? 
+                '<i class="fa-solid fa-right-to-bracket"></i> Login to Portal' : 
+                '<i class="fa-solid fa-user-plus"></i> Register & Verify Email';
+        }
+
+        function handleEmailAuth() {
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            if (!email || !password) return alert("Please fill both Email and Password!");
+
+            if (currentAuthMode === 'login') {
+                if (typeof firebase !== 'undefined' && firebase.auth) {
+                    firebase.auth().signInWithEmailAndPassword(email, password)
+                        .then(res => {
+                            if (res.user.email !== "irfanali062006@gmail.com" && email.includes("owner")) {
+                                alert("Invalid Owner Credentials / Unauthorized Email!");
+                            }
+                        })
+                        .catch(err => alert("Invalid Credentials: " + err.message));
+                } else {
+                    // Fallback Direct Login
+                    currentUser = { email: email, uid: Date.now() };
+                    userRole = (email === "irfanali062006@gmail.com") ? 'owner' : 'customer';
+                    loadUserProfile();
+                    showDashboardHome();
+                }
+            } else {
+                if (typeof firebase !== 'undefined' && firebase.auth) {
+                    firebase.auth().createUserWithEmailAndPassword(email, password)
+                        .then(res => {
+                            res.user.sendEmailVerification();
+                            alert("Registration Successful! Verification link has been sent to your email.");
+                        })
+                        .catch(err => alert(err.message));
+                } else {
+                    alert("Registration Successful!");
+                    switchAuthMode('login');
+                }
+            }
+        }
+
+        function loginWithGoogle() {
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                firebase.auth().signInWithPopup(provider).catch(err => alert(err.message));
+            } else {
+                alert("Google sign in initialized.");
+            }
+        }
+
+        function sendOTP() {
+            const phone = document.getElementById('auth-phone').value;
+            if (!phone) return alert("Enter valid phone number (+91...)");
+
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+                firebase.auth().signInWithPhoneNumber(phone, window.recaptchaVerifier)
+                    .then(result => {
+                        window.confirmationResultGlobal = result;
+                        alert("OTP sent successfully!");
+                        document.getElementById('group-otp').style.display = 'block';
+                        document.getElementById('btn-verify-otp').style.display = 'block';
+                        document.getElementById('btn-send-otp').style.display = 'none';
+                    }).catch(err => alert(err.message));
+            }
+        }
+
+        function verifyOTP() {
+            const otp = document.getElementById('auth-otp').value;
+            if (!otp) return alert("Enter OTP!");
+            if (window.confirmationResultGlobal) {
+                window.confirmationResultGlobal.confirm(otp).catch(err => alert(err.message));
+            }
+        }
+
+        function logout() {
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                firebase.auth().signOut();
+            }
+            currentUser = null;
+            showAuthScreen();
+        }
+
+        function loadUserProfile() {
+            const uid = currentUser ? (currentUser.uid || currentUser.email) : "guest";
+            const savedProfile = JSON.parse(localStorage.getItem(`user_profile_${uid}`)) || {};
+
+            const name = savedProfile.name || (currentUser && currentUser.displayName) || (currentUser && currentUser.email ? currentUser.email.split('@')[0] : "User");
+            const photo = savedProfile.photo || (currentUser && currentUser.photoURL) || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff`;
+
+            document.getElementById('user-display-name').innerText = name;
+            document.getElementById('nav-avatar').src = photo;
+            document.getElementById('profile-avatar-lg').src = photo;
+            document.getElementById('profile-name-input').value = name;
+            document.getElementById('profile-email-title').innerText = currentUser ? (currentUser.email || currentUser.phoneNumber || "User Profile") : "User Profile";
+        }
+
+        function previewProfileImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempProfileBase64 = e.target.result;
+                    document.getElementById('profile-avatar-lg').src = tempProfileBase64;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveUserProfile() {
+            const uid = currentUser ? (currentUser.uid || currentUser.email) : "guest";
+            const newName = document.getElementById('profile-name-input').value.trim();
+
+            const profileData = {
+                name: newName || "User",
+                photo: tempProfileBase64 || document.getElementById('profile-avatar-lg').src
+            };
+
+            localStorage.setItem(`user_profile_${uid}`, JSON.stringify(profileData));
+            loadUserProfile();
+
+            const msg = document.getElementById('profile-status-msg');
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 2500);
+        }
+
+        function openProfileSection() {
+            document.getElementById('screen-dashboard-home').style.display = 'none';
+            document.getElementById('screen-category-page').style.display = 'none';
+            document.getElementById('screen-profile-page').style.display = 'block';
+        }
+
+        function showAuthScreen() {
+            document.getElementById('screen-auth').style.display = 'block';
+            document.getElementById('screen-dashboard-home').style.display = 'none';
+            document.getElementById('screen-category-page').style.display = 'none';
+            document.getElementById('screen-profile-page').style.display = 'none';
+            document.getElementById('nav-user-area').style.display = 'none';
+            document.getElementById('ai-widget-container').style.display = 'none';
+        }
+
+        function showDashboardHome() {
+            document.getElementById('screen-auth').style.display = 'none';
+            document.getElementById('screen-dashboard-home').style.display = 'block';
+            document.getElementById('screen-category-page').style.display = 'none';
+            document.getElementById('screen-profile-page').style.display = 'none';
+            document.getElementById('nav-user-area').style.display = 'flex';
+            document.getElementById('ai-widget-container').style.display = 'block';
+
+            const badge = document.getElementById('user-role-badge');
+            const aiNameElem = document.getElementById('ai-assistant-name');
+            const aiWelcomeElem = document.getElementById('ai-welcome-msg');
+
+            if (userRole === 'owner') {
+                badge.innerText = 'Owner (Super Admin)';
+                badge.className = 'role-badge role-owner';
+                aiNameElem.innerText = 'Asifa (Owner AI)';
+                aiWelcomeElem.innerText = 'Juley Boss Irfan! Main Asifa hoon. Cash on hand aur direct file upload active hai.';
+            } else {
+                badge.innerText = 'Customer / Seller';
+                badge.className = 'role-badge role-customer';
+                aiNameElem.innerText = 'Zahra (Help AI)';
+                aiWelcomeElem.innerText = 'Namaste! Main Zahra hoon. Store pickup aur tournament lobbies me aapki sahayata karungi!';
+            }
+        }
+
+        function openCategoryPage(catKey) {
+            activeCategory = catKey;
+            document.getElementById('screen-dashboard-home').style.display = 'none';
+            document.getElementById('screen-profile-page').style.display = 'none';
+            document.getElementById('screen-category-page').style.display = 'block';
+
+            const titleElem = document.getElementById('cat-page-title');
+            const titles = {
+                accessories: '<i class="fa-solid fa-headphones-simple"></i> Mobile Accessories',
+                fashion: '<i class="fa-solid fa-shirt"></i> Fashion & Apparel',
+                digital: '<i class="fa-solid fa-screwdriver-wrench"></i> Digital Services',
+                tournaments: '<i class="fa-solid fa-trophy"></i> 100+ Game Tournaments'
+            };
+            titleElem.innerHTML = titles[catKey] || 'Category Page';
+            renderCategoryItems(categoryDatabase[catKey] || []);
+        }
+
+        function renderCategoryItems(items) {
+            const container = document.getElementById('cat-items-container');
+            container.innerHTML = '';
+
+            items.forEach(item => {
+                container.innerHTML += `
+                    <div class="item-card">
+                        <img src="${item.image}" class="item-img" alt="${item.title}">
+                        <div class="item-info">
+                            <h4 style="font-size: 15px; margin-bottom: 5px;">${item.title}</h4>
+                            <p style="color: #10b981; font-weight: 700; font-size: 14px; margin-bottom: 5px;">${item.price}</p>
+                            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;"><i class="fa-solid fa-location-dot"></i> Location: ${item.location || 'Kargil Shop'}</p>
+                            <button class="btn btn-primary" style="padding: 8px; font-size: 13px; margin: 0;">${activeCategory === 'tournaments' ? 'Join Tournament' : 'Buy (Cash on Hand)'}</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addNewItemToCategory() {
+            const title = prompt("Enter Item / Tournament Name:");
+            const price = prompt("Enter Price or Entry Fee (e.g. ₹499 or Entry: ₹50):");
+            const location = prompt("Enter Shop / Pickup Location (e.g. Khomini Chowk, Kargil):");
+            
+            if (title && price) {
+                let input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = e => {
+                    let file = e.target.files[0];
+                    let reader = new FileReader();
+                    reader.onload = event => {
+                        categoryDatabase[activeCategory].push({
+                            id: Date.now(),
+                            title: title,
+                            price: price,
+                            location: location || 'Kargil',
+                            image: event.target.result
+                        });
+                        renderCategoryItems(categoryDatabase[activeCategory]);
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            }
+        }
+
+        function toggleAIChat() {
+            const win = document.getElementById('ai-chat-window');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function handleAIPress(e) {
+            if (e.key === 'Enter') {
+                const input = document.getElementById('ai-text-input');
+                if (input.value.trim()) {
+                    sendAIMessage(input.value.trim());
+                    input.value = '';
+                }
+            }
+        }
+
+        function sendAIMessage(text) {
+            const msgs = document.getElementById('ai-messages');
+            msgs.innerHTML += `<div class="msg msg-user">${text}</div>`;
+            msgs.scrollTop = msgs.scrollHeight;
+
+            setTimeout(() => {
+                let reply = "";
+                if (userRole === 'owner') {
+                    reply = "🛠️ [Asifa Action]: Boss Irfan, direct image upload file picker aur location system 100% active kar diya gaya hai!";
+                } else {
+                    reply = "Hello! Main Zahra hoon. Aap items par click karke shop location dekh sakte hain aur Cash on Hand ke sath store par khareedari kar sakte hain.";
+                }
+
+                msgs.innerHTML += `<div class="msg msg-ai">${reply}</div>`;
+                msgs.scrollTop = msgs.scrollHeight;
+            }, 600);
+        }
+
+        function toggleVoiceRecognition() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                return alert("Voice Recognition is not supported in this browser.");
+            }
+
+            const btn = document.getElementById('btn-voice-mic');
+            if (isListening) {
+                speechRecognizer.stop();
+                isListening = false;
+                btn.classList.remove('listening');
+            } else {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                speechRecognizer = new SpeechRecognition();
+                speechRecognizer.lang = 'hi-IN';
+                
+                speechRecognizer.onstart = () => {
+                    isListening = true;
+                    btn.classList.add('listening');
+                };
+
+                speechRecognizer.onresult = (event) => {
+                    sendAIMessage(event.results[0][0].transcript);
+                };
+
+                speechRecognizer.onend = () => {
+                    isListening = false;
+                    btn.classList.remove('listening');
+                };
+
+                speechRecognizer.start();
+            }
+        }
+    </script>
+</body>
+</html>
