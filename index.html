@@ -1,336 +1,104 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All In One - Universal Marketplace Portal</title>
-    <!-- CryptoJS for Password Hashing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
-    <!-- Firebase Modular SDKs (v10) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        // Your Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCtB_fry59vjcWg9NLmvTgZbaxA5hcSWD0",
-            authDomain: "all-in-one-marketplace-30cd5.firebaseapp.com",
-            projectId: "all-in-one-marketplace-30cd5",
-            storageBucket: "all-in-one-marketplace-30cd5.firebasestorage.app",
-            messagingSenderId: "517666199048",
-            appId: "1:517666199048:web:ac5ddcd4fcef8ab000a3bd",
-            measurementId: "G-KMSBF1X55Y"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const googleProvider = new GoogleAuthProvider();
-
-        // Make functions globally accessible
-        window.firebaseLoginWithGoogle = async function() {
-            try {
-                const result = await signInWithPopup(auth, googleProvider);
-                const user = result.user;
-                alert("✅ Google Sign-In Successful! Welcome " + user.displayName);
-                openDashboardFromGoogle(user);
-            } catch (error) {
-                alert("❌ Google Login Error: " + error.message);
-            }
-        };
-
-        window.initRecaptcha = function() {
-            if(!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                    'size': 'invisible'
-                });
-            }
-        };
-
-        window.sendFirebaseSMSOTP = function() {
-            var phone = document.getElementById('regPhone').value.trim();
-            if(!/^[0-9]{10}$/.test(phone)) {
-                alert("⚠️ Sahi 10-digit mobile number dalo!");
-                return;
-            }
-            var formattedPhone = "+91" + phone;
-            window.initRecaptcha();
-            const appVerifier = window.recaptchaVerifier;
-
-            signInWithPhoneNumber(auth, formattedPhone, appVerifier)
-                .then((confirmationResult) => {
-                    window.confirmationResult = confirmationResult;
-                    alert("📱 Real SMS OTP sent to " + formattedPhone);
-                    document.getElementById('otpBox').style.display = 'block';
-                }).catch((error) => {
-                    alert("❌ SMS Gateway Error: " + error.message);
-                });
-        };
-    </script>
-
+    <title>Multi-Auth Login</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-        }
-
-        body {
-            background: #030712;
-            background-image: radial-gradient(circle at top, rgba(0, 242, 254, 0.12) 0%, transparent 65%),
-                              linear-gradient(135deg, #030712 0%, #0f172a 50%, #1e1b4b 100%);
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 16px;
-        }
-
-        .container {
-            background: rgba(15, 23, 42, 0.98);
-            backdrop-filter: blur(20px);
-            width: 100%;
-            max-width: 480px;
-            padding: 24px;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 242, 254, 0.25);
-            border: 1px solid rgba(0, 242, 254, 0.35);
-            text-align: center;
-        }
-
-        .header-badge {
-            display: inline-block;
-            background: linear-gradient(45deg, #00f2fe, #4facfe);
-            color: #030712;
-            font-size: 10px;
-            font-weight: 800;
-            padding: 4px 12px;
-            border-radius: 20px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-
-        h1 {
-            color: #00f2fe;
-            font-size: 28px;
-            font-weight: 900;
-            margin-bottom: 2px;
-            letter-spacing: 0.5px;
-        }
-
-        p.subtitle {
-            color: #94a3b8;
-            font-size: 12px;
-            margin-bottom: 18px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding-bottom: 10px;
-        }
-
-        .auth-card {
-            background: rgba(30, 41, 59, 0.5);
-            padding: 18px;
-            border-radius: 14px;
-            text-align: left;
-            border: 1px solid rgba(0, 242, 254, 0.25);
-            margin-bottom: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 11px;
-            color: #94a3b8;
-            margin-bottom: 4px;
-            font-weight: 600;
-        }
-
-        .auth-card input, .auth-card select {
-            width: 100%;
-            padding: 10px 12px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 12.5px;
-            outline: none;
-        }
-
-        .action-btn {
-            width: 100%;
-            padding: 11px;
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            border: none;
-            border-radius: 8px;
-            color: #030712;
-            font-weight: 800;
-            font-size: 13px;
-            cursor: pointer;
-            margin-top: 6px;
-        }
-
-        .social-btn {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .social-btn.google { border-color: rgba(234, 67, 53, 0.5); }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: #64748b;
-            font-size: 11px;
-            margin: 12px 0;
-        }
-
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .divider span { padding: 0 8px; }
-
-        .switch-text {
-            text-align: center;
-            margin-top: 12px;
-            font-size: 11.5px;
-            color: #94a3b8;
-        }
-
-        .switch-text span {
-            color: #00f2fe;
-            cursor: pointer;
-            font-weight: 700;
-        }
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f4f4f4; margin: 0; }
+        .auth-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; margin: 10px 0; border: none; border-radius: 4px; cursor: pointer; color: white; background-color: #007bff; }
+        button.google-btn { background-color: #db4437; }
+        button.phone-btn { background-color: #28a745; }
+        #recaptcha-container { margin: 10px 0; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header-badge">Firebase Live Powered Portal</div>
+<div class="auth-container">
+    <h2>Login</h2>
+    
+    <!-- Email/Password Login -->
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button id="login-email-btn">Login with Email</button>
 
-        <h1>All In One</h1>
-        <p class="subtitle">Universal Marketplace Portal</p>
+    <hr>
 
-        <div id="recaptcha-container"></div>
+    <!-- Google Login -->
+    <button class="google-btn" id="login-google-btn">Sign in with Google</button>
 
-        <!-- LOGIN SECTION -->
-        <div class="auth-card" id="loginSection">
-            <h3 style="text-align: center; margin-bottom: 10px;">Portal Login</h3>
+    <hr>
 
-            <div class="form-group">
-                <label>Select Role</label>
-                <select id="loginRole">
-                    <option value="Customer">Customer Portal</option>
-                    <option value="Seller">Seller / Vendor Portal</option>
-                    <option value="Admin">Owner Admin Portal</option>
-                </select>
-            </div>
+    <!-- Phone Login -->
+    <input type="tel" id="phone" placeholder="Phone Number (e.g., +91XXXXXXXXXX)">
+    <div id="recaptcha-container"></div>
+    <button class="phone-btn" id="send-otp-btn">Send OTP</button>
+    <input type="text" id="otp" placeholder="Enter OTP" style="display:none;">
+    <button id="verify-otp-btn" style="display:none;">Verify OTP</button>
+</div>
 
-            <div class="form-group">
-                <label>Unique Username</label>
-                <input type="text" id="loginUsername" placeholder="Enter username">
-            </div>
+<script>
+    // Initialize Firebase (Apni Firebase config yahan daalein)
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="loginPass" placeholder="Enter password">
-            </div>
+    // 1. Email/Password Login
+    document.getElementById('login-email-btn').addEventListener('click', () => {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        auth.signInWithEmailAndPassword(email, password)
+            .then(() => alert("Logged in with Email!"))
+            .catch(err => alert(err.message));
+    });
 
-            <button class="action-btn" onclick="handleSecureLogin()">Login Securely</button>
+    // 2. Google Login
+    const provider = new firebase.auth.GoogleAuthProvider();
+    document.getElementById('login-google-btn').addEventListener('click', () => {
+        auth.signInWithPopup(provider)
+            .then(() => alert("Logged in with Google!"))
+            .catch(err => alert(err.message));
+    });
 
-            <div class="divider"><span>OR CONTINUE WITH</span></div>
+    // 3. Phone Authentication
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'invisible'
+    });
 
-            <button class="social-btn google" onclick="window.firebaseLoginWithGoogle()">🌐 Sign in with Google</button>
+    document.getElementById('send-otp-btn').addEventListener('click', () => {
+        const phoneNumber = document.getElementById('phone').value;
+        const appVerifier = window.recaptchaVerifier;
+        auth.signInWithPhoneNumber(phoneNumber, appVerifier)
+            .then(confirmationResult => {
+                window.confirmationResult = confirmationResult;
+                alert("OTP sent!");
+                document.getElementById('send-otp-btn').style.display = 'none';
+                document.getElementById('phone').style.display = 'none';
+                document.getElementById('recaptcha-container').style.display = 'none';
+                document.getElementById('otp').style.display = 'block';
+                document.getElementById('verify-otp-btn').style.display = 'block';
+            }).catch(err => alert(err.message));
+    });
 
-            <div class="switch-text">
-                Naye User Ho? <span onclick="showRegister()">Register Account</span>
-            </div>
-        </div>
+    document.getElementById('verify-otp-btn').addEventListener('click', () => {
+        const otp = document.getElementById('otp').value;
+        window.confirmationResult.confirm(otp)
+            .then(() => alert("Logged in with Phone!"))
+            .catch(err => alert(err.message));
+    });
+</script>
 
-        <!-- REGISTRATION SECTION -->
-        <div class="auth-card" id="registerSection" style="display: none;">
-            <h3 style="text-align: center; margin-bottom: 10px;">New Account Registration</h3>
-
-            <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" id="regName" placeholder="Your full name">
-            </div>
-
-            <div class="form-group">
-                <label>Mobile Number (10 Digits)</label>
-                <input type="text" id="regPhone" placeholder="10 digit phone number">
-            </div>
-
-            <button class="action-btn" onclick="window.sendFirebaseSMSOTP()">Send Real SMS OTP</button>
-
-            <div id="otpBox" style="display:none; margin-top:12px;">
-                <input type="text" id="otpInput" placeholder="Enter Received SMS OTP">
-                <button class="action-btn" onclick="verifyFirebaseOTP()">Verify OTP & Login</button>
-            </div>
-
-            <div class="switch-text">
-                Pehle se account hai? <span onclick="showLogin()">Login Here</span>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function showRegister() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('registerSection').style.display = 'block';
-        }
-
-        function showLogin() {
-            document.getElementById('registerSection').style.display = 'none';
-            document.getElementById('loginSection').style.display = 'block';
-        }
-
-        function handleSecureLogin() {
-            var u = document.getElementById('loginUsername').value.trim();
-            var p = document.getElementById('loginPass').value.trim();
-            if(u === "" || p === "") {
-                alert("⚠️ Username aur Password dono dalo!");
-            } else {
-                alert("Login Processed for " + u);
-            }
-        }
-
-        function openDashboardFromGoogle(user) {
-            alert("Welcome " + user.displayName + " (" + user.email + ")");
-        }
-
-        function verifyFirebaseOTP() {
-            var code = document.getElementById('otpInput').value.trim();
-            if(window.confirmationResult) {
-                window.confirmationResult.confirm(code).then((result) => {
-                    alert("✅ Phone Verified Successfully!");
-                }).catch((error) => {
-                    alert("❌ Invalid OTP Code!");
-                });
-            }
-        }
-    </script>
 </body>
 </html>
