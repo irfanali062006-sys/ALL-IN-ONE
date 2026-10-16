@@ -116,21 +116,21 @@
 
         .auth-tabs {
             display: flex;
-            gap: 10px;
+            gap: 5px;
             margin-bottom: 25px;
         }
 
         .auth-tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 10px 5px;
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
             color: #94a3b8;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             text-align: center;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
             transition: 0.3s;
         }
 
@@ -274,6 +274,29 @@
             padding: 15px;
         }
 
+        /* Admin Table */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .admin-table th, .admin-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .admin-table th { color: #94a3b8; font-weight: 500; }
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-approve { background: #10b981; color: white; }
+        .btn-reject { background: #ef4444; color: white; }
+
         /* AI Widget */
         .ai-widget {
             position: fixed;
@@ -404,13 +427,17 @@
     <!-- MAIN CONTAINER -->
     <div class="container">
 
-        <!-- AUTH SCREEN -->
+        <!-- AUTH SCREEN WITH DEDICATED TABS -->
         <div id="screen-auth" class="auth-wrapper">
             <div class="glass-card">
                 <div class="auth-tabs">
-                    <div id="tab-login-btn" class="auth-tab-btn active" onclick="switchAuthMode('login')">Login</div>
-                    <div id="tab-register-btn" class="auth-tab-btn" onclick="switchAuthMode('register')">Register</div>
+                    <div id="tab-cust-login" class="auth-tab-btn active" onclick="switchAuthTab('customer_login')">Customer</div>
+                    <div id="tab-cust-reg" class="auth-tab-btn" onclick="switchAuthTab('customer_register')">Register</div>
+                    <div id="tab-seller-login" class="auth-tab-btn" onclick="switchAuthTab('seller')">Seller</div>
+                    <div id="tab-owner-login" class="auth-tab-btn" onclick="switchAuthTab('owner')">Owner</div>
                 </div>
+
+                <h3 id="auth-form-title" style="font-size: 16px; margin-bottom: 15px; text-align: center; color: #94a3b8;">Customer Portal Login</h3>
 
                 <div class="form-group">
                     <i class="fa-solid fa-envelope"></i>
@@ -421,10 +448,10 @@
                     <input type="password" id="auth-password" class="form-control" placeholder="Password">
                 </div>
                 
-                <div class="forgot-link" onclick="handleOwnerForgotPassword()">Forgot Owner Password?</div>
+                <div class="forgot-link" id="forgot-password-link" onclick="handleForgotPassword()">Forgot Password?</div>
 
-                <button class="btn btn-primary" id="btn-auth-submit" onclick="handleEmailAuth()">
-                    <i class="fa-solid fa-right-to-bracket"></i> Login to Portal
+                <button class="btn btn-primary" id="btn-auth-action" onclick="handleAuthentication()">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login
                 </button>
 
                 <div class="divider">OR</div>
@@ -456,7 +483,34 @@
 
         <!-- DASHBOARD HOME VIEW -->
         <div id="screen-dashboard-home" style="display: none;">
-            <div class="glass-card">
+            
+            <!-- OWNER EXCLUSIVE CONSOLE -->
+            <div id="owner-admin-console" class="glass-card" style="display: none; border-color: rgba(239, 68, 68, 0.4);">
+                <h3 style="color: #f87171; margin-bottom: 12px;"><i class="fa-solid fa-user-shield"></i> Owner Console: Seller Upgrade Requests</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User Email</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="owner-requests-tbody">
+                        <!-- Dynamic Seller Requests -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- SELLER APPLICATION BANNER FOR CUSTOMERS -->
+            <div id="seller-request-banner" class="glass-card" style="display: flex; justify-content: space-between; align-items: center; background: rgba(99, 102, 241, 0.1);">
+                <div>
+                    <h3 style="font-size: 17px; margin-bottom: 4px;"><i class="fa-solid fa-store"></i> Apply for Seller Account</h3>
+                    <p style="font-size: 13px; color: #94a3b8;">Send request to Owner to host products & game tournaments.</p>
+                </div>
+                <button class="btn btn-primary" style="width: auto; margin: 0; padding: 10px 20px;" onclick="applyForSeller()">Request Seller Role</button>
+            </div>
+
+            <div class="glass-card" style="margin-top: 25px;">
                 <h2 style="margin-bottom: 8px;"><i class="fa-solid fa-layer-group"></i> Explore Categories</h2>
                 <p style="color: #94a3b8; font-size: 14px; margin-bottom: 25px;">Select a category below to open its dedicated page.</p>
                 
@@ -498,7 +552,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h2 id="cat-page-title"><i class="fa-solid fa-box"></i> Category</h2>
                     <button id="btn-add-item" class="btn btn-primary" style="width: auto; margin: 0; display: none;" onclick="addNewItemToCategory()">
-                        <i class="fa-solid fa-plus"></i> Add Item & Location
+                        <i class="fa-solid fa-plus"></i> Add Item / Tournament
                     </button>
                 </div>
 
@@ -543,10 +597,10 @@
                 <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="toggleAIChat()"></i>
             </div>
             <div class="ai-chat-messages" id="ai-messages">
-                <div class="msg msg-ai" id="ai-welcome-msg">Namaste! Main aapka AI Assistant hoon.</div>
+                <div class="msg msg-ai" id="ai-welcome-msg">Hello! I am your AI assistant. How can I help you today?</div>
             </div>
             <div class="ai-chat-input">
-                <input type="text" id="ai-text-input" placeholder="Ask AI..." onkeypress="handleAIPress(event)">
+                <input type="text" id="ai-text-input" placeholder="Ask AI anything..." onkeypress="handleAIPress(event)">
                 <button class="btn-voice" id="btn-voice-mic" onclick="toggleVoiceRecognition()"><i class="fa-solid fa-microphone"></i></button>
             </div>
         </div>
@@ -569,12 +623,16 @@
         const auth = firebase.auth();
 
         let currentUser = null;
-        let userRole = 'customer';
-        let currentAuthMode = 'login';
+        let userRole = 'customer'; // customer, seller, owner
+        let currentAuthTab = 'customer_login';
         let activeCategory = null;
         let tempProfileBase64 = '';
         let isListening = false;
         let speechRecognizer = null;
+
+        let sellerRequestsList = [
+            { email: "pending_seller@gmail.com", status: "Pending" }
+        ];
 
         const categoryDatabase = {
             accessories: [
@@ -588,29 +646,69 @@
                 { id: 201, title: "Mobile Screen & Folder Replacement", price: "₹2,499", location: "Compound Computer Shop", image: "https://images.unsplash.com/photo-1597740985671-2a8a3b80502e?w=400" }
             ],
             tournaments: [
-                { id: 301, title: "Free Fire India Squad Battle (Online/Offline)", price: "Entry: ₹50 | Prize: ₹2,000", location: "Esports Arena Kargil", image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400" },
-                { id: 302, title: "BGMI Erangel Championship Lobbies", price: "Entry: ₹100 | Prize: ₹5,000", location: "Online Room / LAN", image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400" }
+                { id: 301, title: "Free Fire Squad Battle (BR / Clash Squad)", price: "Entry: ₹50 | Prize: ₹2,000", location: "Online / LAN Arena", image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400" },
+                { id: 302, title: "BGMI Erangel Championship Lobbies", price: "Entry: ₹100 | Prize: ₹5,000", location: "Online Custom Room", image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400" }
             ]
         };
 
-        function handleOwnerForgotPassword() {
-            const emailInput = document.getElementById('auth-email').value.trim();
-            if (emailInput !== "irfanali062006@gmail.com") {
-                alert("Invalid Credentials: Password reset is exclusively for irfanali062006@gmail.com!");
-                return;
+        function switchAuthTab(tab) {
+            currentAuthTab = tab;
+            ['tab-cust-login', 'tab-cust-reg', 'tab-seller-login', 'tab-owner-login'].forEach(id => {
+                document.getElementById(id).classList.remove('active');
+            });
+
+            if (tab === 'customer_login') {
+                document.getElementById('tab-cust-login').classList.add('active');
+                document.getElementById('auth-form-title').innerText = "Customer Login";
+                document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Login as Customer';
+            } else if (tab === 'customer_register') {
+                document.getElementById('tab-cust-reg').classList.add('active');
+                document.getElementById('auth-form-title').innerText = "New Customer Registration";
+                document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-user-plus"></i> Register Account';
+            } else if (tab === 'seller') {
+                document.getElementById('tab-seller-login').classList.add('active');
+                document.getElementById('auth-form-title').innerText = "Verified Seller Login";
+                document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-store"></i> Login as Seller';
+            } else if (tab === 'owner') {
+                document.getElementById('tab-owner-login').classList.add('active');
+                document.getElementById('auth-form-title').innerText = "Owner Admin Secure Login";
+                document.getElementById('btn-auth-action').innerHTML = '<i class="fa-solid fa-shield-halved"></i> Owner Access Login';
             }
-            auth.sendPasswordResetEmail(emailInput)
-                .then(() => alert("Owner password reset link dispatched to irfanali062006@gmail.com!"))
-                .catch(err => alert(err.message));
+        }
+
+        function handleForgotPassword() {
+            const emailInput = document.getElementById('auth-email').value.trim();
+            if (currentAuthTab === 'owner') {
+                if (emailInput !== "irfanali062006@gmail.com") {
+                    alert("Invalid Owner Credentials / Unauthorized Email!");
+                    return;
+                }
+                auth.sendPasswordResetEmail(emailInput)
+                    .then(() => alert("Secure Owner password reset link sent to your registered email."))
+                    .catch(err => alert(err.message));
+            } else {
+                if (!emailInput) return alert("Please enter your email address first.");
+                auth.sendPasswordResetEmail(emailInput)
+                    .then(() => alert("Password reset link sent to your email."))
+                    .catch(err => alert(err.message));
+            }
         }
 
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUser = user;
-                if (user.email === "irfanali062006@gmail.com") {
-                    userRole = 'owner';
+                if (currentAuthTab === 'owner') {
+                    if (user.email === "irfanali062006@gmail.com") {
+                        userRole = 'owner';
+                    } else {
+                        alert("Invalid Owner Credentials! Access denied.");
+                        auth.signOut();
+                        return;
+                    }
+                } else if (currentAuthTab === 'seller') {
+                    userRole = 'seller';
                 } else {
-                    userRole = 'customer';
+                    userRole = (user.email === "irfanali062006@gmail.com") ? 'owner' : 'customer';
                 }
                 loadUserProfile();
                 showDashboardHome();
@@ -620,41 +718,39 @@
             }
         });
 
-        function switchAuthMode(mode) {
-            currentAuthMode = mode;
-            document.getElementById('tab-login-btn').className = `auth-tab-btn ${mode === 'login' ? 'active' : ''}`;
-            document.getElementById('tab-register-btn').className = `auth-tab-btn ${mode === 'register' ? 'active' : ''}`;
-            document.getElementById('btn-auth-submit').innerHTML = mode === 'login' ? 
-                '<i class="fa-solid fa-right-to-bracket"></i> Login to Portal' : 
-                '<i class="fa-solid fa-user-plus"></i> Register & Verify Email';
-        }
-
-        function handleEmailAuth() {
+        function handleAuthentication() {
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
             if (!email || !password) return alert("Please fill both Email and Password!");
 
-            if (currentAuthMode === 'login') {
-                auth.signInWithEmailAndPassword(email, password)
-                    .then(res => {
-                        if (res.user.email !== "irfanali062006@gmail.com" && email.includes("owner")) {
-                            alert("Invalid Owner Credentials / Unauthorized Email!");
-                        }
-                    })
-                    .catch(err => alert("Invalid Credentials: " + err.message));
-            } else {
+            if (currentAuthTab === 'owner' && email !== "irfanali062006@gmail.com") {
+                alert("Invalid Credentials: Only official owner email is permitted.");
+                return;
+            }
+
+            if (currentAuthTab === 'customer_register') {
                 auth.createUserWithEmailAndPassword(email, password)
                     .then(res => {
                         res.user.sendEmailVerification();
-                        alert("Registration Successful! Verification link has been sent to your email. Please check and verify.");
+                        alert("Registration Successful! Verification link sent to your email.");
                     })
                     .catch(err => alert(err.message));
+            } else {
+                auth.signInWithEmailAndPassword(email, password)
+                    .catch(err => alert("Invalid Credentials: " + err.message));
             }
         }
 
         function loginWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(err => alert(err.message));
+            auth.signInWithPopup(provider)
+                .then(res => {
+                    if (currentAuthTab === 'owner' && res.user.email !== "irfanali062006@gmail.com") {
+                        alert("Unauthorized Owner Login!");
+                        auth.signOut();
+                    }
+                })
+                .catch(err => alert(err.message));
         }
 
         function sendOTP() {
@@ -751,18 +847,65 @@
             const badge = document.getElementById('user-role-badge');
             const aiNameElem = document.getElementById('ai-assistant-name');
             const aiWelcomeElem = document.getElementById('ai-welcome-msg');
+            const ownerConsole = document.getElementById('owner-admin-console');
+            const sellerBanner = document.getElementById('seller-request-banner');
 
             if (userRole === 'owner') {
                 badge.innerText = 'Owner (Super Admin)';
                 badge.className = 'role-badge role-owner';
+                ownerConsole.style.display = 'block';
+                sellerBanner.style.display = 'none';
                 aiNameElem.innerText = 'Asifa (Owner AI)';
-                aiWelcomeElem.innerText = 'Juley Boss Irfan! Main Asifa hoon. Cash on hand aur direct file upload active hai.';
-            } else {
-                badge.innerText = 'Customer / Seller';
-                badge.className = 'role-badge role-customer';
+                aiWelcomeElem.innerText = 'Hello Boss Irfan! I am Asifa, your personal AI assistant. All platform controls, owner security, and tournament systems are fully operational.';
+                renderOwnerRequests();
+            } else if (userRole === 'seller') {
+                badge.innerText = 'Verified Seller';
+                badge.className = 'role-badge role-seller';
+                ownerConsole.style.display = 'none';
+                sellerBanner.style.display = 'none';
                 aiNameElem.innerText = 'Zahra (Help AI)';
-                aiWelcomeElem.innerText = 'Namaste! Main Zahra hoon. Store pickup aur tournament lobbies me aapki sahayata karungi!';
+                aiWelcomeElem.innerText = 'Hello! I am Zahra. You can now host tournaments and add products to your shop with location details.';
+            } else {
+                badge.innerText = 'Customer';
+                badge.className = 'role-badge role-customer';
+                ownerConsole.style.display = 'none';
+                sellerBanner.style.display = 'flex';
+                aiNameElem.innerText = 'Zahra (Help AI)';
+                aiWelcomeElem.innerText = 'Hello! I am Zahra. Explore categories, join esports tournaments, or request a seller account anytime.';
             }
+        }
+
+        function applyForSeller() {
+            alert("Seller application submitted successfully to Owner! Awaiting review and approval.");
+        }
+
+        function renderOwnerRequests() {
+            const tbody = document.getElementById('owner-requests-tbody');
+            tbody.innerHTML = '';
+            sellerRequestsList.forEach((req, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${req.email}</td>
+                        <td><span style="color: #fbbf24;">${req.status}</span></td>
+                        <td>
+                            <button class="btn-sm btn-approve" onclick="approveSeller(${index})">Approve</button>
+                            <button class="btn-sm btn-reject" onclick="rejectSeller(${index})">Reject</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function approveSeller(index) {
+            sellerRequestsList[index].status = 'Approved';
+            renderOwnerRequests();
+            alert("Seller request approved successfully!");
+        }
+
+        function rejectSeller(index) {
+            sellerRequestsList.splice(index, 1);
+            renderOwnerRequests();
+            alert("Seller request rejected.");
         }
 
         function openCategoryPage(catKey) {
@@ -780,7 +923,7 @@
             };
             titleElem.innerHTML = titles[catKey] || 'Category Page';
 
-            document.getElementById('btn-add-item').style.display = 'block';
+            document.getElementById('btn-add-item').style.display = (userRole === 'owner' || userRole === 'seller') ? 'block' : 'none';
             renderCategoryItems(categoryDatabase[catKey] || []);
         }
 
@@ -796,7 +939,7 @@
                             <h4 style="font-size: 15px; margin-bottom: 5px;">${item.title}</h4>
                             <p style="color: #10b981; font-weight: 700; font-size: 14px; margin-bottom: 5px;">${item.price}</p>
                             <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;"><i class="fa-solid fa-location-dot"></i> Location: ${item.location || 'Kargil Shop'}</p>
-                            <button class="btn btn-primary" style="padding: 6px; font-size: 12px; margin: 0;">${activeCategory === 'tournaments' ? 'Join Tournament' : 'Buy (Cash on Hand)'}</button>
+                            <button class="btn btn-primary" style="padding: 6px; font-size: 12px; margin: 0;">${activeCategory === 'tournaments' ? 'Join Lobby / Match' : 'Buy (Cash on Hand)'}</button>
                         </div>
                     </div>
                 `;
@@ -856,19 +999,29 @@
                 const q = text.toLowerCase();
 
                 if (userRole === 'owner') {
-                    reply = "🛠️ [Asifa Action]: Boss Irfan, location filtering, cash on hand checkout aur direct file upload features puri tarah active kar diye gaye hain!";
+                    if (q.includes('security') || q.includes('owner') || q.includes('password')) {
+                        reply = "Boss Irfan, the owner login is strictly secured for your email with safe password recovery and no email leaks.";
+                    } else {
+                        reply = "Hello Boss Irfan! Asifa here. I am managing all your marketplace requests, tournament lobbies, and system databases seamlessly.";
+                    }
                 } else {
-                    reply = "Hello! Main Zahra hoon. Aap items par click karke shop location dekh sakte hain aur Cash on Hand ke zariye order kar sakte hain.";
+                    if (q.includes('tournament') || q.includes('game') || q.includes('free fire') || q.includes('bgmi')) {
+                        reply = "You can explore 100+ game tournaments with online/offline modes, custom entry fees, and prize pools!";
+                    } else if (q.includes('seller') || q.includes('shop')) {
+                        reply = "You can request a seller account from your dashboard. Once approved by Owner Irfan, you can host items and tournaments.";
+                    } else {
+                        reply = "Hello! I am Zahra. I can help you navigate categories, check store pickup locations, or manage your profile settings.";
+                    }
                 }
 
                 msgs.innerHTML += `<div class="msg msg-ai">${reply}</div>`;
                 msgs.scrollTop = msgs.scrollHeight;
-            }, 600);
+            }, 500);
         }
 
         function toggleVoiceRecognition() {
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                return alert("Voice Recognition is not supported.");
+                return alert("Voice Recognition is not supported in this browser.");
             }
 
             const btn = document.getElementById('btn-voice-mic');
@@ -879,7 +1032,7 @@
             } else {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 speechRecognizer = new SpeechRecognition();
-                speechRecognizer.lang = 'hi-IN';
+                speechRecognizer.lang = 'en-US';
                 
                 speechRecognizer.onstart = () => {
                     isListening = true;
